@@ -116,14 +116,6 @@ export default function LoginPage() {
             )}
           </button>
         </form>
-
-        <div className="mt-8 p-4 bg-slate-50 rounded-lg">
-          <p className="text-sm text-slate-600 mb-2 font-medium">Usuários de teste:</p>
-          <div className="space-y-1 text-sm text-slate-500">
-            <p><strong>admin</strong> / admin123</p>
-            <p><strong>studio</strong> / alvite2024</p>
-          </div>
-        </div>
       </div>
     </div>
   );
