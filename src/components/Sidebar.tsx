@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, FileSpreadsheet, MessageCircle, Users } from 'lucide-react'
+import { Home, FileSpreadsheet, MessageCircle, Users, Calculator } from 'lucide-react'
 
 export default function Sidebar() {
   const pathname = usePathname()
@@ -10,6 +10,7 @@ export default function Sidebar() {
   const navigation = [
     { name: 'Home', href: '/', icon: 'home' },
     { name: 'Planilha', href: '/planilha', icon: 'document' },
+    { name: 'Viabilidade', href: '/viabilidade', icon: 'calculator' },
     { name: 'WhatsApp', href: '/whatsapp', icon: 'whatsapp' },
     { name: 'Corretores', href: '/corretores', icon: 'users' },
   ]
@@ -22,6 +23,8 @@ export default function Sidebar() {
         return <Home {...iconProps} />
       case 'document':
         return <FileSpreadsheet {...iconProps} />
+      case 'calculator':
+        return <Calculator {...iconProps} />
       case 'whatsapp':
         return <MessageCircle {...iconProps} />
       case 'users':
