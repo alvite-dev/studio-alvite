@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
@@ -42,8 +43,14 @@ export default function LoginPage() {
       <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 flex items-center justify-center">
-              <img src="/new-logo.svg" alt="Studio Alvite Logo" className="w-full h-full" />
+            <div className="w-16 h-16 relative">
+              <Image 
+                src="/new-logo.svg" 
+                alt="Studio Alvite Logo" 
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
           </div>
           <h1 className="text-2xl font-semibold text-slate-800 mb-2">

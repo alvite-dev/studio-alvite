@@ -17,4 +17,14 @@ body {
   background: #ffffff !important;
   color: #171717 !important;
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Previne overflow horizontal em todos os elementos */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
 }

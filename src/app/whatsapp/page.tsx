@@ -82,10 +82,10 @@ export default function WhatsappPage() {
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200 bg-white">
-        <div className="flex items-center justify-between">
+      <div className="px-4 sm:px-6 py-4 border-b border-slate-200 bg-white">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">WhatsApp Business</h1>
+            <h1 className="text-xl sm:text-2xl font-semibold text-slate-900">WhatsApp Business</h1>
             <p className="text-sm text-slate-600 mt-1">
               Central de atendimento e relacionamento com clientes
             </p>
@@ -103,9 +103,9 @@ export default function WhatsappPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex overflow-hidden">
         {/* Conversations List */}
-        <div className="w-80 bg-white border-r border-slate-200 flex flex-col">
+        <div className="w-72 sm:w-80 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
           {/* Search */}
           <div className="p-4 border-b border-slate-100">
             <div className="relative">
@@ -155,22 +155,22 @@ export default function WhatsappPage() {
         {/* Chat Area */}
         <div className="flex-1 flex flex-col">
           {/* Chat Header */}
-          <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
+          <div className="px-4 sm:px-6 py-4 border-b border-slate-200 bg-slate-50">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center">
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-sm font-medium text-slate-700">
                     {selectedChat.name.split(' ').map(n => n[0]).join('')}
                   </span>
                 </div>
-                <div>
-                  <h2 className="font-medium text-slate-900">{selectedChat.name}</h2>
+                <div className="min-w-0">
+                  <h2 className="font-medium text-slate-900 truncate">{selectedChat.name}</h2>
                   <p className="text-xs text-slate-500">
                     {selectedChat.status === 'active' ? 'Online agora' : 'Última atividade: hoje'}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 flex-shrink-0">
                 <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
                   <Phone className="w-4 h-4" />
                 </button>
@@ -182,14 +182,14 @@ export default function WhatsappPage() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-slate-50">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.sender === 'studio' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-sm px-4 py-3 rounded-2xl ${
+                  className={`max-w-xs sm:max-w-sm px-4 py-3 rounded-2xl ${
                     message.sender === 'studio'
                       ? 'bg-blue-500 text-white'
                       : 'bg-white text-slate-900 border border-slate-200'
@@ -207,12 +207,12 @@ export default function WhatsappPage() {
           </div>
 
           {/* Message Input */}
-          <div className="px-6 py-4 bg-white border-t border-slate-200">
-            <div className="flex items-end space-x-3">
-              <button className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+          <div className="px-4 sm:px-6 py-4 bg-white border-t border-slate-200">
+            <div className="flex items-end space-x-2 sm:space-x-3">
+              <button className="p-2 text-slate-400 hover:text-slate-600 transition-colors flex-shrink-0">
                 <Paperclip className="w-5 h-5" />
               </button>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <textarea
                   value={messageInput}
                   onChange={(e) => setMessageInput(e.target.value)}
@@ -224,7 +224,7 @@ export default function WhatsappPage() {
               </div>
               <button
                 onClick={handleSendMessage}
-                className="px-4 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
                 disabled={!messageInput.trim()}
               >
                 <Send className="w-4 h-4" />

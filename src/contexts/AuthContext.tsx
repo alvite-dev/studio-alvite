@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Usuários hardcoded por enquanto - depois pode migrar para banco de dados
 const USERS = [
-  { username: 'admin', password: 'admin123' },
+  { username: 'admin', password: 'admin' },
   { username: 'studio', password: 'alvite2024' }
 ];
 

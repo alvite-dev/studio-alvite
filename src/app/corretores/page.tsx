@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Edit, MessageCircle, Trash2, Plus, Settings, Inbox } from 'lucide-react';
+import { Search, Edit, MessageCircle, Trash2, Plus, Inbox } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 
 // Dados mockados dos corretores - será substituído pela integração com Supabase futuramente
 const corretoresMockados = [
@@ -108,11 +109,6 @@ export default function CorretoresPage() {
   // Obter regiões únicas para o filtro
   const regioes = [...new Set(corretoresMockados.map(c => c.regiao))];
 
-  const getStatusBadge = (status: string) => {
-    return status === 'ativo' 
-      ? 'bg-green-100 text-green-800 border border-green-200'
-      : 'bg-gray-100 text-gray-600 border border-gray-200';
-  };
 
   const formatarTelefone = (telefone: string) => {
     return telefone.replace(/\D/g, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
@@ -120,25 +116,20 @@ export default function CorretoresPage() {
 
   return (
     <div className="h-screen flex flex-col">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200 bg-white">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-slate-900">Corretores</h1>
-            <p className="text-sm text-slate-600 mt-1">
-              Gerenciamento de relacionamento com corretores parceiros
-            </p>
-          </div>
+      <PageHeader
+        title="Corretores"
+        description="Gerenciamento de relacionamento com corretores parceiros"
+        action={
           <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
             <Plus className="w-4 h-4" />
             <span>Adicionar Corretor</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Estatísticas */}
-      <div className="px-6 py-4 bg-slate-50 border-b border-slate-200">
-        <div className="flex space-x-6">
+      <div className="px-4 sm:px-6 py-4 bg-slate-50 border-b border-slate-200">
+        <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-4 sm:space-y-0">
           <div className="text-center">
             <div className="text-2xl font-semibold text-slate-900">{totalCorretores}</div>
             <div className="text-sm text-slate-600">Total de Corretores</div>
@@ -155,10 +146,10 @@ export default function CorretoresPage() {
       </div>
 
       {/* Filtros */}
-      <div className="px-6 py-4 bg-white border-b border-slate-200">
-        <div className="flex flex-wrap gap-4 items-center">
+      <div className="px-4 sm:px-6 py-4 bg-white border-b border-slate-200">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-center">
           {/* Busca */}
-          <div className="flex-1 min-w-64">
+          <div className="flex-1 min-w-0 sm:min-w-64">
             <div className="relative">
               <input
                 type="text"
@@ -171,60 +162,54 @@ export default function CorretoresPage() {
             </div>
           </div>
 
-          {/* Filtro Status */}
-          <div>
-            <select
-              value={filtroStatus}
-              onChange={(e) => setFiltroStatus(e.target.value)}
-              className="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500"
-            >
-              <option value="todos">Todos os Status</option>
-              <option value="ativo">Ativos</option>
-              <option value="inativo">Inativos</option>
-            </select>
-          </div>
+          {/* Filtros Mobile/Desktop */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Filtro Status */}
+            <div>
+              <select
+                value={filtroStatus}
+                onChange={(e) => setFiltroStatus(e.target.value)}
+                className="w-full sm:w-auto px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500"
+              >
+                <option value="todos">Todos os Status</option>
+                <option value="ativo">Ativos</option>
+                <option value="inativo">Inativos</option>
+              </select>
+            </div>
 
-          {/* Filtro Região */}
-          <div>
-            <select
-              value={filtroRegiao}
-              onChange={(e) => setFiltroRegiao(e.target.value)}
-              className="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500"
-            >
-              <option value="todas">Todas as Regiões</option>
-              {regioes.map(regiao => (
-                <option key={regiao} value={regiao}>{regiao}</option>
-              ))}
-            </select>
+            {/* Filtro Região */}
+            <div>
+              <select
+                value={filtroRegiao}
+                onChange={(e) => setFiltroRegiao(e.target.value)}
+                className="w-full sm:w-auto px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500"
+              >
+                <option value="todas">Todas as Regiões</option>
+                {regioes.map(regiao => (
+                  <option key={regiao} value={regiao}>{regiao}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Tabela */}
       <div className="flex-1 overflow-auto">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-w-full">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Corretor
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Contato
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                  Telefone
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Imobiliária
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                  Área de Atuação
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Especialidade
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Performance
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Ações
                 </th>
               </tr>
@@ -232,48 +217,35 @@ export default function CorretoresPage() {
             <tbody className="bg-white divide-y divide-slate-200">
               {corretoresFiltrados.map((corretor) => (
                 <tr key={corretor.id} className="hover:bg-slate-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 sm:px-6 py-4">
                     <div>
                       <div className="text-sm font-medium text-slate-900">{corretor.nome}</div>
-                      <div className="text-sm text-slate-500">{corretor.regiao}</div>
+                      <div className="text-xs text-slate-500">{corretor.imobiliaria}</div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-slate-900">{corretor.email}</div>
-                    <div className="text-sm text-slate-500">{formatarTelefone(corretor.telefone)}</div>
+                  <td className="px-4 sm:px-6 py-4">
+                    <div className="text-sm text-slate-900">{formatarTelefone(corretor.telefone)}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-slate-900">{corretor.imobiliaria}</div>
-                    <div className="text-sm text-slate-500">Comissão: {corretor.comissao}</div>
+                  <td className="px-4 sm:px-6 py-4">
+                    <div className="text-sm text-slate-900">{corretor.regiao}</div>
+                    <div className="text-xs text-slate-500">{corretor.especialidade}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-slate-900">{corretor.especialidade}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-slate-900">{corretor.totalVendas} vendas</div>
-                    <div className="text-sm text-slate-500">Último contato: {new Date(corretor.ultimoContato).toLocaleDateString('pt-BR')}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(corretor.status)}`}>
-                      {corretor.status === 'ativo' ? 'Ativo' : 'Inativo'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <td className="px-4 sm:px-6 py-4 text-sm font-medium">
                     <div className="flex space-x-2">
                       <button 
-                        className="text-blue-600 hover:text-blue-900 transition-colors"
+                        className="text-blue-600 hover:text-blue-900 transition-colors p-1"
                         title="Editar"
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button 
-                        className="text-green-600 hover:text-green-900 transition-colors"
+                        className="text-green-600 hover:text-green-900 transition-colors p-1"
                         title="WhatsApp"
                       >
                         <MessageCircle className="w-4 h-4" />
                       </button>
                       <button 
-                        className="text-red-600 hover:text-red-900 transition-colors"
+                        className="text-red-600 hover:text-red-900 transition-colors p-1"
                         title="Excluir"
                       >
                         <Trash2 className="w-4 h-4" />

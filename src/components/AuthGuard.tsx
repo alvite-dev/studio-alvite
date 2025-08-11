@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import Sidebar from './Sidebar';
+import ErrorBoundary from './ErrorBoundary';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -50,11 +51,15 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   // Se está logado, mostrar com sidebar
   return (
-    <div className="flex">
-      <Sidebar />
-      <main className="flex-1 ml-72 min-h-screen">
-        {children}
-      </main>
-    </div>
+    <ErrorBoundary>
+      <div className="flex">
+        <Sidebar />
+        <main className="flex-1 md:ml-64 lg:ml-72 min-h-screen overflow-x-hidden">
+          <div className="pt-16 md:pt-0">
+            {children}
+          </div>
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 }

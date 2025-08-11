@@ -1,11 +1,14 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Home, FileSpreadsheet, MessageCircle, Users, Calculator, LogOut, User } from 'lucide-react'
+import { Home, FileSpreadsheet, MessageCircle, Users, Calculator, LogOut, User, Globe, Menu, X } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
 export default function Sidebar() {
+  const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
   const { user, logout } = useAuth()
 
@@ -15,6 +18,7 @@ export default function Sidebar() {
     { name: 'Viabilidade', href: '/viabilidade', icon: 'calculator' },
     { name: 'WhatsApp', href: '/whatsapp', icon: 'whatsapp' },
     { name: 'Corretores', href: '/corretores', icon: 'users' },
+    { name: 'Scrapping', href: '/scrapping', icon: 'scrapping' },
   ]
 
   const renderIcon = (iconName: string) => {
@@ -31,17 +35,44 @@ export default function Sidebar() {
         return <MessageCircle {...iconProps} />
       case 'users':
         return <Users {...iconProps} />
+      case 'scrapping':
+        return <Globe {...iconProps} />
       default:
         return null
     }
   }
 
   return (
-    <div className="fixed inset-y-0 left-0 w-72 bg-white">
+    <>
+      {/* Mobile menu button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white shadow-lg rounded-lg border border-slate-200"
+      >
+        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
+      
+      {/* Backdrop */}
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`fixed inset-y-0 left-0 w-64 md:w-72 bg-white shadow-lg z-40 transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
       {/* Logo */}
       <div className="flex items-center px-6 py-12">
-        <div className="w-12 h-12 text-slate-900 mr-4">
-          <img src="/new-logo.svg" alt="Studio Alvite Logo" className="w-full h-full" />
+        <div className="w-12 h-12 text-slate-900 mr-4 relative">
+          <Image 
+            src="/new-logo.svg" 
+            alt="Studio Alvite Logo" 
+            fill
+            className="object-contain"
+          />
         </div>
         <span className="text-xl font-semibold text-slate-900">Studio Alvite</span>
       </div>
@@ -54,6 +85,7 @@ export default function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={() => setIsOpen(false)}
               className={`flex items-center px-4 py-3 text-sm font-medium rounded-xl mb-1 transition-all duration-200 ${
                 isActive
                   ? 'bg-blue-50 text-blue-600'
@@ -81,6 +113,7 @@ export default function Sidebar() {
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
