@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Search, Edit, MessageCircle, Trash2, Plus, Inbox } from 'lucide-react';
-import PageHeader from '@/components/PageHeader';
+import PageHeader from '@/components/features/PageHeader';
 
 // Dados mockados dos corretores - será substituído pela integração com Supabase futuramente
 const corretoresMockados = [

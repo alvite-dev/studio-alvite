@@ -3,7 +3,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import Sidebar from './Sidebar';
+import Sidebar from '../layout/Sidebar';
 import ErrorBoundary from './ErrorBoundary';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Search, Download, ExternalLink, Home, MapPin, Ruler, Car, Bed, Bath, Loader2 } from 'lucide-react';
-import PageHeader from '@/components/PageHeader';
+import PageHeader from '@/components/features/PageHeader';
 
 interface PropertyData {
   id: string;

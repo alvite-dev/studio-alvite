@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
-import AuthGuard from "@/components/AuthGuard";
+import AuthGuard from "@/components/features/AuthGuard";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -11,8 +11,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Studio Alvite - CRM",
-  description: "CRM turbinado para Studio Alvite",
+  title: "House Flipping Dashboard | Studio Alvite",
+  description: "Sistema completo de gestão para house flipping - prospecção, análise e controle de investimentos imobiliários",
 };
 
 export default function RootLayout({
