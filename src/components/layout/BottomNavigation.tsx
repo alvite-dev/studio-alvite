@@ -41,7 +41,7 @@ export default function BottomNavigation() {
               key={item.name}
               href={item.href}
               className={`flex flex-col items-center justify-center px-3 py-2 min-w-0 flex-1 transition-all duration-150 ${
-                isActive ? 'text-slate-900' : 'text-slate-400'
+                isActive ? 'text-nav-active' : 'text-slate-400'
               }`}
             >
               <IconComponent className={`w-6 h-6 mb-1 ${isActive ? 'fill-current' : ''}`} />

@@ -4,11 +4,14 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Home, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Home, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const pathname = usePathname()
+
+  const shouldShowExpanded = !isCollapsed || isHovered
 
   const navigation = [
     { name: 'Home', href: '/', icon: 'home' },
@@ -26,11 +29,17 @@ export default function Sidebar() {
   }
 
   return (
-    <div className={`hidden md:flex fixed inset-y-0 left-0 ${isCollapsed ? 'w-16' : 'w-64'} bg-white border-r border-slate-200/60 z-40 transition-all duration-200 ease-out flex-col`}>
+    <div 
+      className={`hidden md:flex fixed inset-y-0 left-0 ${shouldShowExpanded ? 'w-64' : 'w-20'} bg-white border-r border-slate-200/60 z-40 transition-all duration-200 ease-out flex-col`}
+      onMouseLeave={() => setIsHovered(false)}
+    >
         
         {/* Logo */}
-        <div className={`flex items-center py-8 ${isCollapsed ? 'justify-center px-4' : 'px-6'}`}>
-          <div className={`w-8 h-8 text-slate-900 relative ${isCollapsed ? '' : 'mr-3'}`}>
+        <div 
+          className={`flex items-center py-8 ${shouldShowExpanded ? 'px-6' : 'justify-center px-4'}`}
+          onMouseEnter={() => isCollapsed && setIsHovered(true)}
+        >
+          <div className={`w-8 h-8 text-slate-900 relative ${shouldShowExpanded ? 'mr-3' : ''}`}>
             <Image 
               src="/new-logo.svg" 
               alt="Alvite Logo" 
@@ -38,13 +47,16 @@ export default function Sidebar() {
               className="object-contain"
             />
           </div>
-          {!isCollapsed && (
+          {shouldShowExpanded && (
             <span className="text-lg font-medium text-slate-900 tracking-tight">Alvite</span>
           )}
         </div>
 
         {/* Navigation */}
-        <nav className={`flex-1 py-6 ${isCollapsed ? 'px-2' : 'px-4'}`}>
+        <nav 
+          className={`flex-1 py-6 ${shouldShowExpanded ? 'px-4' : 'px-2'}`}
+          onMouseEnter={() => isCollapsed && setIsHovered(true)}
+        >
           <div className="space-y-1">
             {navigation.map((item) => {
               const isActive = pathname === item.href
@@ -52,15 +64,15 @@ export default function Sidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center ${isCollapsed ? 'justify-center px-2' : 'px-3'} py-2 text-sm font-medium rounded-md transition-all duration-150 ${
+                  className={`group flex items-center ${shouldShowExpanded ? 'px-3 py-2 rounded-md' : 'justify-center w-10 h-10 rounded-lg mx-auto'} text-sm font-medium transition-all duration-150 ${
                     isActive
-                      ? 'bg-slate-900 text-white'
+                      ? 'bg-nav-active text-white'
                       : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
                   }`}
-                  title={isCollapsed ? item.name : undefined}
+                  title={!shouldShowExpanded ? item.name : undefined}
                 >
-                  <span className={isCollapsed ? '' : 'mr-3'}>{renderIcon(item.icon)}</span>
-                  {!isCollapsed && item.name}
+                  <span className={shouldShowExpanded ? 'mr-3' : ''}>{renderIcon(item.icon)}</span>
+                  {shouldShowExpanded && item.name}
                 </Link>
               )
             })}
@@ -68,16 +80,13 @@ export default function Sidebar() {
         </nav>
 
         {/* Collapse button - bottom of sidebar */}
-        <div className={`border-t border-slate-100 ${isCollapsed ? 'p-2' : 'p-4'}`}>
+        <div className={`border-t border-slate-100 ${shouldShowExpanded ? 'p-4' : 'p-2'}`}>
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`hidden md:flex ${isCollapsed ? 'justify-center w-full px-2' : 'px-3 w-full justify-start'} py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-all duration-150`}
+            className={`hidden md:flex ${shouldShowExpanded ? 'justify-start' : 'justify-center'} w-full px-2 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-all duration-150`}
             title={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
           >
-            <span className={isCollapsed ? '' : 'mr-3'}>
-              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-            </span>
-            {!isCollapsed && 'Recolher'}
+            {isCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
           </button>
         </div>
       </div>

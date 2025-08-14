@@ -3,11 +3,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* Cor principal - CadetBlue */
+  --nav-active-bg: #5f9ea0;
+  --nav-active-text: #ffffff;
+  --nav-inactive-text: #525252;
+  --nav-hover-bg: #e0f2f1;
+  --nav-hover-text: #5f9ea0;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-nav-active: var(--nav-active-bg);
+  --color-nav-inactive: var(--nav-inactive-text);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
