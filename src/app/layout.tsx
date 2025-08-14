@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
-import AuthGuard from "@/components/features/AuthGuard";
+import Sidebar from "@/components/layout/Sidebar";
+import BottomNavigation from "@/components/layout/BottomNavigation";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -11,8 +11,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "House Flipping Dashboard | Studio Alvite",
-  description: "Sistema completo de gestão para house flipping - prospecção, análise e controle de investimentos imobiliários",
+  title: "House Flipping Dashboard",
+  description: "Dashboard moderno para gestão e análise de investimentos imobiliários em house flipping",
 };
 
 export default function RootLayout({
@@ -23,11 +23,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased bg-white`}>
-        <AuthProvider>
-          <AuthGuard>
+        <div className="flex h-screen">
+          {/* Desktop Sidebar */}
+          <Sidebar />
+          
+          {/* Main Content */}
+          <main className="flex-1 overflow-auto md:overflow-auto pb-16 md:pb-0">
             {children}
-          </AuthGuard>
-        </AuthProvider>
+          </main>
+        </div>
+        
+        {/* Mobile Bottom Navigation */}
+        <BottomNavigation />
       </body>
     </html>
   );
