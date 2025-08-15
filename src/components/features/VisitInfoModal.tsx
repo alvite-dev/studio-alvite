@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button'
 import { VisitaCompleta } from '@/stores/visitasStore'
 import { MapPin, Phone, Clock, ExternalLink, Edit, Trash2, Calendar, User } from 'lucide-react'
+import { useSwipeToDismiss } from '@/hooks/useSwipeToDismiss'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 interface VisitInfoModalProps {
   visita: VisitaCompleta | null
@@ -20,6 +22,13 @@ export function VisitInfoModal({
   onEdit, 
   onDelete 
 }: VisitInfoModalProps) {
+  const isMobile = useIsMobile()
+  const swipeRef = useSwipeToDismiss({
+    onDismiss: () => onOpenChange(false),
+    threshold: 80,
+    enabled: open && isMobile
+  })
+
   if (!visita) return null
 
   // Usar dados manuais se existirem, senão usar dados da base (COALESCE)
@@ -66,15 +75,19 @@ export function VisitInfoModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center space-x-2">
+      <DialogContent 
+        variant={isMobile ? "bottom-sheet" : "default"} 
+        size={isMobile ? "bottom-sheet" : "default"} 
+        ref={swipeRef}
+      >
+        <DialogHeader className={isMobile ? "pt-4" : ""}>
+          <DialogTitle className={`flex items-center space-x-2 text-lg font-semibold ${isMobile ? "justify-center" : "justify-start"}`}>
             <Calendar className="w-5 h-5 text-primary" />
             <span>Detalhes da Visita</span>
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 mt-4">
+        <div className="space-y-4 mt-6 pb-4">
           {/* Endereço */}
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-slate-900 flex items-center space-x-2">

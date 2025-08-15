@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input'
 import { VisitaCompleta, useVisitasStore } from '@/stores/visitasStore'
 import { useCorretoresStore } from '@/stores/corretoresStore'
 import { useImoveisStore } from '@/stores/imoveisStore'
+import { useSwipeToDismiss } from '@/hooks/useSwipeToDismiss'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 interface VisitFormProps {
   trigger: React.ReactNode
@@ -20,6 +22,13 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
   const [internalOpen, setInternalOpen] = useState(false)
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen
   const setOpen = onOpenChange || setInternalOpen
+  const isMobile = useIsMobile()
+  
+  const swipeRef = useSwipeToDismiss({
+    onDismiss: () => setOpen(false),
+    threshold: 80,
+    enabled: open && isMobile
+  })
   const { adicionarVisita, editarVisita } = useVisitasStore()
   const { corretores, carregarCorretores, isLoading: isLoadingCorretores, obterCorretorPorId } = useCorretoresStore()
   const { imoveis, carregarImoveis, isLoading: isLoadingImoveis, obterImovelPorId } = useImoveisStore()
@@ -204,14 +213,18 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
+      <DialogContent 
+        variant={isMobile ? "bottom-sheet" : "default"} 
+        size={isMobile ? "bottom-sheet" : "default"} 
+        ref={swipeRef}
+      >
+        <DialogHeader className={isMobile ? "pt-4" : ""}>
+          <DialogTitle className={`flex items-center text-lg font-semibold ${isMobile ? "justify-center" : "justify-start"}`}>
             {visitaParaEditar ? 'Editar Visita' : 'Nova Visita'}
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-6 pb-4">
           {/* Seletor de Imóvel */}
           <div className="space-y-1">
             <div className="flex items-center justify-between">
@@ -455,16 +468,16 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
           </div>
 
           {/* Botões */}
-          <div className="flex gap-2 pt-4">
+          <div className="flex gap-3 pt-6 border-t border-slate-200 mt-6">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              className="flex-1"
+              className="flex-1 h-12"
             >
               Cancelar
             </Button>
-            <Button type="submit" className="flex-1">
+            <Button type="submit" className="flex-1 h-12">
               {visitaParaEditar ? 'Salvar' : 'Criar Visita'}
             </Button>
           </div>

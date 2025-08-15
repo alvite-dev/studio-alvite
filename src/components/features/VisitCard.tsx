@@ -49,7 +49,7 @@ export function VisitCard({ visita, isDragging }: VisitCardProps) {
     >
       <CardContent className="p-4 pt-6">
         {/* Informações principais */}
-        <div className="space-y-3 pr-16 sm:pr-28">
+        <div className="space-y-3 pr-12 sm:pr-32">
           {/* Endereço - primeiro */}
           <div className="flex items-start space-x-3">
             <MapPin className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />

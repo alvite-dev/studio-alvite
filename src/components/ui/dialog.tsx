@@ -2,6 +2,7 @@ import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;
@@ -15,7 +16,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 backdrop-blur-sm",
       className
     )}
     {...props}
@@ -23,28 +24,67 @@ const DialogOverlay = React.forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+const dialogContentVariants = cva(
+  "fixed z-50 gap-4 bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out",
+  {
+    variants: {
+      variant: {
+        default: "left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] border border-slate-200 rounded-lg data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
+        "bottom-sheet": "bottom-0 left-0 right-0 border-t border-slate-200 rounded-t-xl data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom"
+      },
+      size: {
+        default: "grid w-full max-w-lg",
+        "bottom-sheet": "w-full max-h-[90vh] overflow-y-auto"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default"
+    }
+  }
+)
+
+export interface DialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
+    VariantProps<typeof dialogContentVariants> {}
+
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-slate-200 bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-lg",
-        className
-      )}
-      {...props}
-    >
+  DialogContentProps
+>(({ className, variant, size, children, ...props }, ref) => {
+  const contentRef = React.useRef<HTMLDivElement>(null)
+  
+  // Combinar refs se necessário
+  React.useImperativeHandle(ref, () => contentRef.current!)
+
+  return (
+    <DialogPortal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={contentRef}
+        className={cn(dialogContentVariants({ variant, size }), className)}
+        {...props}
+      >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-        <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
-    </DialogPrimitive.Content>
-  </DialogPortal>
-));
+      {variant === "bottom-sheet" ? (
+        <>
+          {/* Handle indicator para bottom sheet */}
+          <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-slate-300 rounded-full" />
+          <DialogPrimitive.Close className="absolute right-4 top-4 p-2 rounded-lg opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground touch-manipulation">
+            <X className="h-5 w-5 sm:h-4 sm:w-4" />
+            <span className="sr-only">Close</span>
+          </DialogPrimitive.Close>
+        </>
+      ) : (
+        <DialogPrimitive.Close className="absolute right-3 top-3 p-2 rounded-lg opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground touch-manipulation">
+          <X className="h-5 w-5 sm:h-4 sm:w-4" />
+          <span className="sr-only">Close</span>
+        </DialogPrimitive.Close>
+      )}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  )
+});
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({

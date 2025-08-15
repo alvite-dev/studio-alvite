@@ -5,7 +5,8 @@ import {
   DndContext, 
   closestCenter,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -61,33 +62,33 @@ function SortableVisitCard({
   return (
     <div className="relative group">
       {/* Botões de ação - fora da área de drag */}
-      <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-1">
+      <div className="absolute top-3 right-3 z-10 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => onInfo(visita)}
-          className="h-8 w-8 text-slate-500 hover:text-slate-700 hover:bg-slate-50 bg-white shadow-sm border border-slate-200"
+          className="h-10 w-10 sm:h-9 sm:w-9 text-slate-500 hover:text-slate-700 hover:bg-slate-50 bg-white shadow-md border border-slate-200 rounded-lg transition-all duration-200 hover:scale-105"
           title="Ver informações"
         >
-          <Info className="w-3 h-3" />
+          <Info className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => onEdit(visita)}
-          className="h-8 w-8 text-slate-500 hover:text-slate-700 hover:bg-slate-50 bg-white shadow-sm border border-slate-200"
+          className="h-10 w-10 sm:h-9 sm:w-9 text-slate-500 hover:text-slate-700 hover:bg-slate-50 bg-white shadow-md border border-slate-200 rounded-lg transition-all duration-200 hover:scale-105"
           title="Editar visita"
         >
-          <Edit className="w-3 h-3" />
+          <Edit className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => onDelete(visita.id)}
-          className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50 bg-white shadow-sm border border-slate-200"
+          className="h-10 w-10 sm:h-9 sm:w-9 text-red-600 hover:text-red-700 hover:bg-red-50 bg-white shadow-md border border-slate-200 rounded-lg transition-all duration-200 hover:scale-105"
           title="Remover visita"
         >
-          <Trash2 className="w-3 h-3" />
+          <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
         </Button>
       </div>
 
@@ -97,7 +98,7 @@ function SortableVisitCard({
         style={style} 
         {...attributes}
         {...listeners}
-        className="touch-none cursor-grab active:cursor-grabbing"
+        className="cursor-grab active:cursor-grabbing"
       >
         <VisitCard
           visita={visita}
@@ -130,7 +131,17 @@ export default function AgendaPage() {
   }, [carregarVisitas, carregarCorretores, carregarImoveis])
   
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 300,
+        tolerance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
