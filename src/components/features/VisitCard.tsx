@@ -1,30 +1,22 @@
 'use client'
 
 import { Card, CardContent } from '@/components/ui/card'
-import { VisitaForm } from '@/stores/visitasStore'
-import { useCorretoresStore } from '@/stores/corretoresStore'
-import { useImoveisStore } from '@/stores/imoveisStore'
+import { VisitaCompleta } from '@/stores/visitasStore'
 import { MapPin, Phone, Clock, ExternalLink, User } from 'lucide-react'
 
 interface VisitCardProps {
-  visita: VisitaForm
+  visita: VisitaCompleta
   isDragging?: boolean
 }
 
 export function VisitCard({ visita, isDragging }: VisitCardProps) {
-  const { obterCorretorPorId } = useCorretoresStore()
-  const { obterImovelPorId } = useImoveisStore()
+  // Usar dados manuais se existirem, senão usar dados da base (COALESCE)
+  const corretorNome = visita.corretor_nome_manual || visita.corretor_nome || 'Corretor não encontrado'
+  const corretorTelefone = visita.corretor_telefone_manual || visita.corretor_telefone || ''
+  const corretorImobiliaria = visita.imobiliaria
   
-  const corretor = visita.corretor_id ? obterCorretorPorId(visita.corretor_id) : null
-  const imovel = visita.imovel_id ? obterImovelPorId(visita.imovel_id) : null
-  
-  // Usar dados manuais se existirem, senão usar dados da base
-  const corretorNome = visita.corretor_nome_manual || corretor?.nome || 'Corretor não encontrado'
-  const corretorTelefone = visita.corretor_telefone_manual || corretor?.telefone || ''
-  const corretorImobiliaria = corretor?.imobiliaria
-  
-  const imovelEndereco = visita.imovel_endereco_manual || imovel?.endereco || 'Endereço não encontrado'
-  const imovelLink = visita.imovel_link_manual || imovel?.link || ''
+  const imovelEndereco = visita.imovel_endereco_manual || visita.imovel_endereco || 'Endereço não encontrado'
+  const imovelLink = visita.imovel_link_manual || visita.imovel_link || ''
 
   const formatTime = (date: Date) => {
     return new Intl.DateTimeFormat('pt-BR', {
@@ -57,15 +49,15 @@ export function VisitCard({ visita, isDragging }: VisitCardProps) {
     >
       <CardContent className="p-4 pt-6">
         {/* Informações principais */}
-        <div className="space-y-3 pr-28">
+        <div className="space-y-3 pr-16 sm:pr-28">
           {/* Endereço - primeiro */}
           <div className="flex items-start space-x-3">
             <MapPin className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
             <span className="text-sm text-slate-700 line-clamp-2 leading-relaxed">
               {imovelEndereco}
-              {imovel && (
+              {(visita.quartos !== undefined && visita.banheiros !== undefined && visita.vagas !== undefined) && (
                 <span className="text-slate-500 text-xs ml-2">
-                  ({imovel.quartos}Q {imovel.banheiros}B {imovel.vagas}V)
+                  ({visita.quartos}Q {visita.banheiros}B {visita.vagas}V)
                 </span>
               )}
             </span>

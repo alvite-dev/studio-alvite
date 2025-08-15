@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Home, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { Home, Calendar, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -15,6 +15,7 @@ export default function Sidebar() {
 
   const navigation = [
     { name: 'Home', href: '/', icon: 'home' },
+    { name: 'Agenda de Visitas', href: '/agenda', icon: 'calendar' },
   ]
 
   const renderIcon = (iconName: string) => {
@@ -23,6 +24,8 @@ export default function Sidebar() {
     switch (iconName) {
       case 'home':
         return <Home {...iconProps} />
+      case 'calendar':
+        return <Calendar {...iconProps} />
       default:
         return null
     }
@@ -30,7 +33,7 @@ export default function Sidebar() {
 
   return (
     <div 
-      className={`hidden md:flex fixed inset-y-0 left-0 ${shouldShowExpanded ? 'w-64' : 'w-20'} bg-white border-r border-slate-200/60 z-40 transition-all duration-200 ease-out flex-col`}
+      className={`hidden md:flex ${shouldShowExpanded ? 'w-64' : 'w-20'} bg-white border-r border-slate-200/60 transition-all duration-200 ease-out flex-col`}
       onMouseLeave={() => setIsHovered(false)}
     >
         

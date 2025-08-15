@@ -7,11 +7,15 @@
   --foreground: #171717;
   
   /* Sistema de Cores - CadetBlue */
-  --nav-active-bg: #5f9ea0;
+  --primary: #5f9ea0;
+  --primary-hover: #4a7c7e;
+  --primary-light: #e0f2f1;
+  
+  --nav-active-bg: var(--primary);
   --nav-active-text: #ffffff;
   --nav-inactive-text: #525252;
-  --nav-hover-bg: #e0f2f1;
-  --nav-hover-text: #5f9ea0;
+  --nav-hover-bg: var(--primary-light);
+  --nav-hover-text: var(--primary);
   
   /* Textos */
   --text-primary: #171717;

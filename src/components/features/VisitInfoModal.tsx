@@ -2,16 +2,14 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { VisitaForm } from '@/stores/visitasStore'
-import { useCorretoresStore } from '@/stores/corretoresStore'
-import { useImoveisStore } from '@/stores/imoveisStore'
+import { VisitaCompleta } from '@/stores/visitasStore'
 import { MapPin, Phone, Clock, ExternalLink, Edit, Trash2, Calendar, User } from 'lucide-react'
 
 interface VisitInfoModalProps {
-  visita: VisitaForm | null
+  visita: VisitaCompleta | null
   open: boolean
   onOpenChange: (open: boolean) => void
-  onEdit: (visita: VisitaForm) => void
+  onEdit: (visita: VisitaCompleta) => void
   onDelete: (id: string) => void
 }
 
@@ -22,21 +20,15 @@ export function VisitInfoModal({
   onEdit, 
   onDelete 
 }: VisitInfoModalProps) {
-  const { obterCorretorPorId } = useCorretoresStore()
-  const { obterImovelPorId } = useImoveisStore()
-  
   if (!visita) return null
 
-  const corretor = visita.corretor_id ? obterCorretorPorId(visita.corretor_id) : null
-  const imovel = visita.imovel_id ? obterImovelPorId(visita.imovel_id) : null
+  // Usar dados manuais se existirem, senão usar dados da base (COALESCE)
+  const corretorNome = visita.corretor_nome_manual || visita.corretor_nome || 'Corretor não encontrado'
+  const corretorTelefone = visita.corretor_telefone_manual || visita.corretor_telefone || ''
+  const corretorImobiliaria = visita.imobiliaria
   
-  // Usar dados manuais se existirem, senão usar dados da base
-  const corretorNome = visita.corretor_nome_manual || corretor?.nome || 'Corretor não encontrado'
-  const corretorTelefone = visita.corretor_telefone_manual || corretor?.telefone || ''
-  const corretorImobiliaria = corretor?.imobiliaria
-  
-  const imovelEndereco = visita.imovel_endereco_manual || imovel?.endereco || 'Endereço não encontrado'
-  const imovelLink = visita.imovel_link_manual || imovel?.link || ''
+  const imovelEndereco = visita.imovel_endereco_manual || visita.imovel_endereco || 'Endereço não encontrado'
+  const imovelLink = visita.imovel_link_manual || visita.imovel_link || ''
 
   const formatDateTime = (date: Date) => {
     return new Intl.DateTimeFormat('pt-BR', {
@@ -91,9 +83,9 @@ export function VisitInfoModal({
             </h4>
             <p className="text-sm text-slate-700 pl-6 leading-relaxed">
               {imovelEndereco}
-              {imovel && (
+              {(visita.quartos !== undefined && visita.banheiros !== undefined && visita.vagas !== undefined) && (
                 <span className="text-slate-500 text-xs block mt-1">
-                  {imovel.quartos} quartos • {imovel.banheiros} banheiros • {imovel.vagas} vagas
+                  {visita.quartos} quartos • {visita.banheiros} banheiros • {visita.vagas} vagas
                 </span>
               )}
             </p>

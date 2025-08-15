@@ -9,6 +9,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'primary': 'var(--primary)',
+        'primary-hover': 'var(--primary-hover)',
+        'primary-light': 'var(--primary-light)',
         'nav-active': 'var(--nav-active-bg)',
         'nav-inactive': 'var(--nav-inactive-text)',
         'text-primary': 'var(--text-primary)',

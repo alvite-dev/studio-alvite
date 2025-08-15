@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   DndContext, 
   closestCenter,
@@ -27,7 +27,9 @@ import { VisitCard } from '@/components/features/VisitCard'
 import { VisitForm } from '@/components/forms/VisitForm'
 import { VisitInfoModal } from '@/components/features/VisitInfoModal'
 import PageHeader from '@/components/features/PageHeader'
-import { useVisitasStore, VisitaForm } from '@/stores/visitasStore'
+import { useVisitasStore, VisitaCompleta } from '@/stores/visitasStore'
+import { useCorretoresStore } from '@/stores/corretoresStore'
+import { useImoveisStore } from '@/stores/imoveisStore'
 import { Plus, Calendar, Info, Edit, Trash2 } from 'lucide-react'
 
 // Wrapper para tornar cada VisitCard draggable
@@ -37,9 +39,9 @@ function SortableVisitCard({
   onEdit,
   onDelete 
 }: { 
-  visita: VisitaForm
-  onInfo: (visita: VisitaForm) => void
-  onEdit: (visita: VisitaForm) => void
+  visita: VisitaCompleta
+  onInfo: (visita: VisitaCompleta) => void
+  onEdit: (visita: VisitaCompleta) => void
   onDelete: (id: string) => void
 }) {
   const {
@@ -59,7 +61,7 @@ function SortableVisitCard({
   return (
     <div className="relative group">
       {/* Botões de ação - fora da área de drag */}
-      <div className="absolute top-4 right-4 z-10 flex items-center space-x-1">
+      <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-1">
         <Button
           variant="ghost"
           size="icon"
@@ -107,11 +109,25 @@ function SortableVisitCard({
 }
 
 export default function AgendaPage() {
-  const { visitas, removerVisita, reordenarVisitas } = useVisitasStore()
-  const [visitaParaEditar, setVisitaParaEditar] = useState<VisitaForm | undefined>()
+  const { visitas, isLoading, carregarVisitas, removerVisita, reordenarVisitas } = useVisitasStore()
+  const { carregarCorretores } = useCorretoresStore()
+  const { carregarImoveis } = useImoveisStore()
+  const [visitaParaEditar, setVisitaParaEditar] = useState<VisitaCompleta | undefined>()
   const [modalEditOpen, setModalEditOpen] = useState(false)
-  const [visitaInfo, setVisitaInfo] = useState<VisitaForm | null>(null)
+  const [visitaInfo, setVisitaInfo] = useState<VisitaCompleta | null>(null)
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
+
+  // Carregar dados iniciais
+  useEffect(() => {
+    const carregarTodosDados = async () => {
+      await Promise.all([
+        carregarVisitas(),
+        carregarCorretores(),
+        carregarImoveis()
+      ])
+    }
+    carregarTodosDados()
+  }, [carregarVisitas, carregarCorretores, carregarImoveis])
   
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -120,14 +136,14 @@ export default function AgendaPage() {
     })
   )
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
 
     if (active.id !== over?.id) {
       const oldIndex = visitas.findIndex((visita) => visita.id === active.id)
       const newIndex = visitas.findIndex((visita) => visita.id === over?.id)
 
-      reordenarVisitas(arrayMove(visitas, oldIndex, newIndex))
+      await reordenarVisitas(arrayMove(visitas, oldIndex, newIndex))
     }
   }
 
@@ -137,29 +153,29 @@ export default function AgendaPage() {
     setModalEditOpen(false)
   }
 
-  const handleInfoVisita = (visita: VisitaForm) => {
+  const handleInfoVisita = (visita: VisitaCompleta) => {
     setVisitaInfo(visita)
     setModalInfoOpen(true)
   }
 
-  const handleEditVisita = (visita: VisitaForm) => {
+  const handleEditVisita = (visita: VisitaCompleta) => {
     setVisitaParaEditar(visita)
     setModalEditOpen(true)
   }
 
-  const handleDeleteVisita = (id: string) => {
+  const handleDeleteVisita = async (id: string) => {
     if (confirm('Tem certeza que deseja remover esta visita?')) {
-      removerVisita(id)
+      await removerVisita(id)
     }
   }
 
-  const handleEditFromInfo = (visita: VisitaForm) => {
+  const handleEditFromInfo = (visita: VisitaCompleta) => {
     setVisitaParaEditar(visita)
     setModalEditOpen(true)
   }
 
-  const handleDeleteFromInfo = (id: string) => {
-    removerVisita(id)
+  const handleDeleteFromInfo = async (id: string) => {
+    await removerVisita(id)
   }
 
   return (
@@ -183,8 +199,16 @@ export default function AgendaPage() {
       {/* Content */}
       <div className="px-4 pb-20 md:pb-8 md:px-6 pt-6">
 
-        {/* Lista de Visitas */}
-        {visitas.length > 0 ? (
+        {/* Loading */}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+            <p className="text-slate-600">Carregando visitas...</p>
+          </div>
+        ) : (
+          <>
+            {/* Lista de Visitas */}
+            {visitas.length > 0 ? (
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -218,6 +242,8 @@ export default function AgendaPage() {
               Nenhuma visita agendada
             </h3>
           </div>
+        )}
+          </>
         )}
       </div>
 

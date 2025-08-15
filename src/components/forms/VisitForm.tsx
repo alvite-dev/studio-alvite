@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { VisitaForm, useVisitasStore } from '@/stores/visitasStore'
+import { VisitaCompleta, useVisitasStore } from '@/stores/visitasStore'
 import { useCorretoresStore } from '@/stores/corretoresStore'
 import { useImoveisStore } from '@/stores/imoveisStore'
 
 interface VisitFormProps {
   trigger: React.ReactNode
-  visitaParaEditar?: VisitaForm
+  visitaParaEditar?: VisitaCompleta
   onSuccess?: () => void
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -32,7 +32,7 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
     if (imoveis.length === 0) {
       carregarImoveis()
     }
-  }, [])
+  }, [carregarCorretores, carregarImoveis, corretores.length, imoveis.length])
 
   // Dados do formulário
   const [formData, setFormData] = useState({
@@ -88,7 +88,7 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
   }, [visitaParaEditar, open])
 
   const handleChange = (field: keyof typeof formData) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData(prev => ({
       ...prev,
@@ -246,7 +246,7 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
               <>
                 <select
                   value={formData.imovel_id}
-                  onChange={(e) => handleChange('imovel_id')(e as any)}
+                  onChange={handleChange('imovel_id')}
                   className={`flex h-10 w-full rounded-lg border bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.imovel_id ? 'border-red-300' : 'border-slate-300'
                   }`}
@@ -353,7 +353,7 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
               <>
                 <select
                   value={formData.corretor_id}
-                  onChange={(e) => handleChange('corretor_id')(e as any)}
+                  onChange={handleChange('corretor_id')}
                   className={`flex h-10 w-full rounded-lg border bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.corretor_id ? 'border-red-300' : 'border-slate-300'
                   }`}

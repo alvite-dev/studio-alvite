@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, BarChart3, Settings } from 'lucide-react'
+import { Home, Calendar, Settings } from 'lucide-react'
 
 export default function BottomNavigation() {
   const pathname = usePathname()
@@ -15,10 +15,10 @@ export default function BottomNavigation() {
       activeIcon: Home
     },
     { 
-      name: 'Dashboard', 
-      href: '/dashboard', 
-      icon: BarChart3,
-      activeIcon: BarChart3
+      name: 'Agenda', 
+      href: '/agenda', 
+      icon: Calendar,
+      activeIcon: Calendar
     },
     { 
       name: 'Config', 
