@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Home, Calendar, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { Home, Calendar, Users, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -16,6 +16,7 @@ export default function Sidebar() {
   const navigation = [
     { name: 'Home', href: '/', icon: 'home' },
     { name: 'Agenda de Visitas', href: '/agenda', icon: 'calendar' },
+    { name: 'Corretores', href: '/corretores', icon: 'users' },
   ]
 
   const renderIcon = (iconName: string) => {
@@ -26,6 +27,8 @@ export default function Sidebar() {
         return <Home {...iconProps} />
       case 'calendar':
         return <Calendar {...iconProps} />
+      case 'users':
+        return <Users {...iconProps} />
       default:
         return null
     }
@@ -42,7 +45,7 @@ export default function Sidebar() {
           className={`flex items-center py-8 ${shouldShowExpanded ? 'px-6' : 'justify-center px-4'}`}
           onMouseEnter={() => isCollapsed && setIsHovered(true)}
         >
-          <div className={`w-8 h-8 text-slate-900 relative ${shouldShowExpanded ? 'mr-3' : ''}`}>
+          <div className={`w-10 h-10 text-slate-900 relative ${shouldShowExpanded ? 'mr-4' : ''}`}>
             <Image 
               src="/new-logo.svg" 
               alt="Alvite Logo" 
@@ -51,7 +54,7 @@ export default function Sidebar() {
             />
           </div>
           {shouldShowExpanded && (
-            <span className="text-lg font-medium text-slate-900 tracking-tight">Alvite</span>
+            <span className="text-xl font-semibold text-slate-900 tracking-tight">Alvite</span>
           )}
         </div>
 
