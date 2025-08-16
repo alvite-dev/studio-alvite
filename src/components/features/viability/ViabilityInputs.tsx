@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Building, CreditCard, Wrench, Settings } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Building, CreditCard, Wrench, Settings, Edit3 } from 'lucide-react'
 import { ViabilityInputs as IViabilityInputs } from '@/hooks/useViabilityCalculator'
 
 interface ViabilityInputsProps {
@@ -13,6 +15,8 @@ interface ViabilityInputsProps {
 }
 
 export function ViabilityInputs({ inputs, onUpdate }: ViabilityInputsProps) {
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -26,16 +30,16 @@ export function ViabilityInputs({ inputs, onUpdate }: ViabilityInputsProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Dados Básicos */}
       <Card>
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Building className="w-5 h-5 text-blue-600" />
             Dados Básicos do Imóvel
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="valorCompra">Valor de Compra</Label>
@@ -79,68 +83,100 @@ export function ViabilityInputs({ inputs, onUpdate }: ViabilityInputsProps) {
 
       {/* Financiamento */}
       <Card>
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <CreditCard className="w-5 h-5 text-green-600" />
-            Configurações de Financiamento
-          </CardTitle>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <CreditCard className="w-5 h-5 text-green-600" />
+              Financiamento
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+              className="gap-2 text-slate-600 hover:text-slate-900"
+            >
+              <Edit3 className="w-4 h-4" />
+              {isAdvancedOpen ? 'Ocultar' : 'Ajustar'}
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="percentualEntrada">Percentual de Entrada</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="percentualEntrada"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="1"
-                  value={inputs.percentualEntrada}
-                  onChange={(e) => onUpdate('percentualEntrada', Number(e.target.value))}
-                />
-                <Badge variant="outline">{formatPercentage(inputs.percentualEntrada)}</Badge>
-              </div>
+        <CardContent className="space-y-3">
+          {/* Valores fixos sempre visíveis */}
+          <div className="grid grid-cols-3 gap-4 p-3 bg-slate-50 rounded-lg">
+            <div className="text-center">
+              <p className="text-xs text-slate-500">Entrada</p>
+              <p className="font-medium">{formatPercentage(inputs.percentualEntrada)}</p>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="percentualITBI">ITBI (%)</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  id="percentualITBI"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="1"
-                  value={inputs.percentualITBI}
-                  onChange={(e) => onUpdate('percentualITBI', Number(e.target.value))}
-                />
-                <Badge variant="outline">{formatPercentage(inputs.percentualITBI)}</Badge>
-              </div>
+            <div className="text-center">
+              <p className="text-xs text-slate-500">ITBI</p>
+              <p className="font-medium">{formatPercentage(inputs.percentualITBI)}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-xs text-slate-500">Período</p>
+              <p className="font-medium">{inputs.mesesFinanciamento}m</p>
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="mesesFinanciamento">Período (meses)</Label>
-            <Input
-              id="mesesFinanciamento"
-              type="number"
-              min="1"
-              max="24"
-              value={inputs.mesesFinanciamento}
-              onChange={(e) => onUpdate('mesesFinanciamento', Number(e.target.value))}
-            />
-          </div>
+
+          {/* Campos editáveis (expandível) */}
+          {isAdvancedOpen && (
+            <div className="space-y-4 pt-3 border-t border-slate-200">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="percentualEntrada">Percentual de Entrada</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="percentualEntrada"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      value={inputs.percentualEntrada}
+                      onChange={(e) => onUpdate('percentualEntrada', Number(e.target.value))}
+                    />
+                    <Badge variant="outline">{formatPercentage(inputs.percentualEntrada)}</Badge>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="percentualITBI">ITBI (%)</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="percentualITBI"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="1"
+                      value={inputs.percentualITBI}
+                      onChange={(e) => onUpdate('percentualITBI', Number(e.target.value))}
+                    />
+                    <Badge variant="outline">{formatPercentage(inputs.percentualITBI)}</Badge>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="mesesFinanciamento">Período (meses)</Label>
+                <Input
+                  id="mesesFinanciamento"
+                  type="number"
+                  min="1"
+                  max="24"
+                  value={inputs.mesesFinanciamento}
+                  onChange={(e) => onUpdate('mesesFinanciamento', Number(e.target.value))}
+                />
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Custos Extras */}
       <Card>
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Wrench className="w-5 h-5 text-orange-600" />
             Custos Operacionais
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           <div className="space-y-2">
             <Label htmlFor="percentualReforma">Reforma (% do valor)</Label>
             <div className="flex items-center gap-2">
@@ -187,13 +223,13 @@ export function ViabilityInputs({ inputs, onUpdate }: ViabilityInputsProps) {
 
       {/* Opcionais */}
       <Card>
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Settings className="w-5 h-5 text-purple-600" />
             Configurações Opcionais
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">

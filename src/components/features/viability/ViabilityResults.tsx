@@ -49,56 +49,56 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
   const totalCosts = costBreakdown.reduce((sum, item) => sum + item.value, 0)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Resumo Principal */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className={`border-2 ${getROIColor(results.roi)} border-opacity-20`}>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-600">ROI</p>
-                <p className={`text-2xl font-bold ${getROIColor(results.roi).split(' ')[0]}`}>
+                <p className="text-xs font-medium text-slate-600">ROI</p>
+                <p className={`text-xl font-bold ${getROIColor(results.roi).split(' ')[0]}`}>
                   {formatPercentage(results.roi)}
                 </p>
-                <Badge className={`mt-2 ${status.color} text-white`}>
+                <Badge className={`mt-1 text-xs ${status.color} text-white`}>
                   {status.text}
                 </Badge>
               </div>
-              <TrendingUp className={`w-8 h-8 ${getROIColor(results.roi).split(' ')[0]}`} />
+              <TrendingUp className={`w-6 h-6 ${getROIColor(results.roi).split(' ')[0]}`} />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-600">Lucro Projetado</p>
-                <p className={`text-2xl font-bold ${results.lucro >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <p className="text-xs font-medium text-slate-600">Lucro Projetado</p>
+                <p className={`text-xl font-bold ${results.lucro >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {formatCurrency(results.lucro)}
                 </p>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-xs text-slate-500 mt-1">
                   Em {6} meses
                 </p>
               </div>
-              <DollarSign className={`w-8 h-8 ${results.lucro >= 0 ? 'text-green-600' : 'text-red-600'}`} />
+              <DollarSign className={`w-6 h-6 ${results.lucro >= 0 ? 'text-green-600' : 'text-red-600'}`} />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-600">Valorização</p>
-                <p className={`text-2xl font-bold ${results.valorizacao >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                <p className="text-xs font-medium text-slate-600">Valorização</p>
+                <p className={`text-xl font-bold ${results.valorizacao >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
                   {formatPercentage(results.valorizacao)}
                 </p>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-xs text-slate-500 mt-1">
                   No período
                 </p>
               </div>
-              <BarChart3 className={`w-8 h-8 ${results.valorizacao >= 0 ? 'text-blue-600' : 'text-red-600'}`} />
+              <BarChart3 className={`w-6 h-6 ${results.valorizacao >= 0 ? 'text-blue-600' : 'text-red-600'}`} />
             </div>
           </CardContent>
         </Card>
