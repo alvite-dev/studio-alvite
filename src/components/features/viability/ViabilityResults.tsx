@@ -1,15 +1,19 @@
 'use client'
 
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { TrendingUp, DollarSign, PieChart, BarChart3, AlertCircle } from 'lucide-react'
 import { ViabilityResults as IViabilityResults } from '@/hooks/useViabilityCalculator'
+import { CostBreakdownModal } from './CostBreakdownModal'
 
 interface ViabilityResultsProps {
   results: IViabilityResults
 }
 
 export function ViabilityResults({ results }: ViabilityResultsProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -94,99 +98,65 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
         </Card>
       </div>
 
-      {/* Detalhamento de Custos */}
+      {/* Resumo de Custos */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <PieChart className="w-5 h-5 text-slate-600" />
-            Detalhamento de Custos
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <PieChart className="w-5 h-5 text-slate-600" />
+              Resumo de Custos
+            </CardTitle>
+            <button 
+              onClick={() => setIsModalOpen(true)}
+              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              title="Ver detalhamento completo"
+            >
+              <BarChart3 className="w-4 h-4 text-slate-500" />
+            </button>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Custos de Aquisição */}
-            <div className="space-y-3">
-              <h4 className="font-medium text-slate-700 text-sm uppercase tracking-wide">Aquisição</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Entrada</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.entrada)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">ITBI</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.itbi)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Avaliação/Escritura</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.avaliacaoEscritura)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Registro Cartório</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.registroCartorio)}</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t border-slate-200 font-semibold text-blue-600">
-                  <span className="text-sm">Subtotal</span>
-                  <span className="text-sm">{formatCurrency(results.totalAquisicao)}</span>
-                </div>
+          <div className="space-y-3">
+            {/* Subtotais */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center p-3 bg-blue-50 rounded-lg">
+                <p className="text-xs text-blue-600 font-medium">AQUISIÇÃO</p>
+                <p className="text-lg font-semibold text-blue-700">{formatCurrency(results.totalAquisicao)}</p>
+              </div>
+              <div className="text-center p-3 bg-green-50 rounded-lg">
+                <p className="text-xs text-green-600 font-medium">OPERACIONAIS</p>
+                <p className="text-lg font-semibold text-green-700">{formatCurrency(results.totalOperacional)}</p>
               </div>
             </div>
 
-            {/* Custos Operacionais */}
-            <div className="space-y-3">
-              <h4 className="font-medium text-slate-700 text-sm uppercase tracking-wide">Operacionais</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Financiamento (6m)</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.financiamento6m)}</span>
+            {/* Custos de Saída */}
+            {(results.quitacaoFinanciamento > 0 || results.corretagem > 0 || results.impostoRenda > 0) && (
+              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-200">
+                <div className="text-center">
+                  <p className="text-xs text-slate-500">Quitação</p>
+                  <p className="text-sm font-medium">{formatCurrency(results.quitacaoFinanciamento)}</p>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Condomínio (6m)</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.condominio6m)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Contas (6m)</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.contas6m)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Reforma</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.reforma)}</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t border-slate-200 font-semibold text-green-600">
-                  <span className="text-sm">Subtotal</span>
-                  <span className="text-sm">{formatCurrency(results.totalOperacional)}</span>
-                </div>
+                {results.corretagem > 0 && (
+                  <div className="text-center">
+                    <p className="text-xs text-slate-500">Corretagem</p>
+                    <p className="text-sm font-medium">{formatCurrency(results.corretagem)}</p>
+                  </div>
+                )}
+                {results.impostoRenda > 0 && (
+                  <div className="text-center">
+                    <p className="text-xs text-slate-500">Imp. Renda</p>
+                    <p className="text-sm font-medium">{formatCurrency(results.impostoRenda)}</p>
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
+            )}
 
-          {/* Custos de Saída */}
-          <div className="mt-6 pt-4 border-t border-slate-200">
-            <h4 className="font-medium text-slate-700 text-sm uppercase tracking-wide mb-3">Custos de Saída</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-600">Quitação</span>
-                <span className="text-sm font-medium">{formatCurrency(results.quitacaoFinanciamento)}</span>
+            {/* Total Geral */}
+            <div className="pt-3 border-t-2 border-slate-300">
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-slate-900">Investimento Total</span>
+                <span className="text-xl font-bold text-slate-900">{formatCurrency(results.investimentoTotal)}</span>
               </div>
-              {results.corretagem > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Corretagem</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.corretagem)}</span>
-                </div>
-              )}
-              {results.impostoRenda > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-600">Imp. Renda</span>
-                  <span className="text-sm font-medium">{formatCurrency(results.impostoRenda)}</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Total Geral */}
-          <div className="mt-4 pt-4 border-t-2 border-slate-300">
-            <div className="flex justify-between items-center">
-              <span className="font-semibold text-slate-900">Investimento Total</span>
-              <span className="text-lg font-bold text-slate-900">{formatCurrency(results.investimentoTotal)}</span>
             </div>
           </div>
         </CardContent>
@@ -209,6 +179,13 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
           </CardContent>
         </Card>
       )}
+
+      {/* Modal de Detalhamento */}
+      <CostBreakdownModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        results={results}
+      />
     </div>
   )
 }

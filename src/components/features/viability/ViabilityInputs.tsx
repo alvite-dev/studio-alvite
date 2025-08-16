@@ -17,6 +17,7 @@ interface ViabilityInputsProps {
 
 export function ViabilityInputs({ inputs, results, onUpdate }: ViabilityInputsProps) {
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
+  const [isOptionalOpen, setIsOptionalOpen] = useState(false)
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -235,55 +236,83 @@ export function ViabilityInputs({ inputs, results, onUpdate }: ViabilityInputsPr
       {/* Opcionais */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Settings className="w-5 h-5 text-purple-600" />
-            Configurações Opcionais
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Settings className="w-5 h-5 text-purple-600" />
+              Opcionais
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsOptionalOpen(!isOptionalOpen)}
+              className="gap-2 text-slate-600 hover:text-slate-900"
+            >
+              <Edit3 className="w-4 h-4" />
+              {isOptionalOpen ? 'Ocultar' : 'Ajustar'}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label>Incluir Corretagem</Label>
-                <p className="text-sm text-slate-500">Taxa sobre valor de venda</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={inputs.incluirCorretagem}
-                  onChange={(e) => onUpdate('incluirCorretagem', e.target.checked)}
-                  className="rounded"
-                />
-                {inputs.incluirCorretagem && (
-                  <div className="flex items-center gap-1">
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                      value={inputs.percentualCorretagem}
-                      onChange={(e) => onUpdate('percentualCorretagem', Number(e.target.value))}
-                      className="w-20"
-                    />
-                    <Badge variant="outline">{formatPercentage(inputs.percentualCorretagem)}</Badge>
-                  </div>
-                )}
-              </div>
+          {/* Valores fixos sempre visíveis */}
+          <div className="grid grid-cols-2 gap-4 p-3 bg-slate-50 rounded-lg">
+            <div className="text-center">
+              <p className="text-xs text-slate-500">Corretagem</p>
+              <p className="font-medium">
+                {inputs.incluirCorretagem ? formatPercentage(inputs.percentualCorretagem) : 'Não'}
+              </p>
             </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label>Incluir Imposto de Renda</Label>
-                <p className="text-sm text-slate-500">15% sobre lucro líquido</p>
-              </div>
-              <input
-                type="checkbox"
-                checked={inputs.incluirIR}
-                onChange={(e) => onUpdate('incluirIR', e.target.checked)}
-                className="rounded"
-              />
+            <div className="text-center">
+              <p className="text-xs text-slate-500">Imp. Renda</p>
+              <p className="font-medium">{inputs.incluirIR ? 'Sim' : 'Não'}</p>
             </div>
           </div>
+
+          {/* Campos editáveis (expandível) */}
+          {isOptionalOpen && (
+            <div className="space-y-4 pt-3 border-t border-slate-200">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label>Incluir Corretagem</Label>
+                  <p className="text-sm text-slate-500">Taxa sobre valor de venda</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={inputs.incluirCorretagem}
+                    onChange={(e) => onUpdate('incluirCorretagem', e.target.checked)}
+                    className="rounded"
+                  />
+                  {inputs.incluirCorretagem && (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        max="1"
+                        value={inputs.percentualCorretagem}
+                        onChange={(e) => onUpdate('percentualCorretagem', Number(e.target.value))}
+                        className="w-20"
+                      />
+                      <Badge variant="outline">{formatPercentage(inputs.percentualCorretagem)}</Badge>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label>Incluir Imposto de Renda</Label>
+                  <p className="text-sm text-slate-500">15% sobre lucro líquido</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={inputs.incluirIR}
+                  onChange={(e) => onUpdate('incluirIR', e.target.checked)}
+                  className="rounded"
+                />
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
