@@ -37,16 +37,6 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
 
   const status = getProfitabilityStatus(results.roi)
 
-  // Dados para breakdown de custos
-  const costBreakdown = [
-    { label: 'Custos Aquisição', value: results.totalAquisicao, color: 'bg-blue-500' },
-    { label: 'Custos Operacionais', value: results.totalOperacional, color: 'bg-green-500' },
-    { label: 'Quitação', value: results.quitacaoFinanciamento, color: 'bg-purple-500' },
-    { label: 'Corretagem', value: results.corretagem, color: 'bg-yellow-500' },
-    { label: 'Imp. Renda', value: results.impostoRenda, color: 'bg-red-500' },
-  ].filter(item => item.value > 0)
-
-  const totalCosts = costBreakdown.reduce((sum, item) => sum + item.value, 0)
 
   return (
     <div className="space-y-4">
@@ -104,107 +94,103 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
         </Card>
       </div>
 
-      {/* Breakdown de Custos */}
+      {/* Detalhamento de Custos */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <PieChart className="w-5 h-5 text-slate-600" />
-            Breakdown de Custos
+            Detalhamento de Custos
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {costBreakdown.map((item, index) => {
-              const percentage = (item.value / totalCosts) * 100
-              return (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">{item.label}</span>
-                    <div className="text-right">
-                      <span className="text-sm font-medium">{formatCurrency(item.value)}</span>
-                      <span className="text-xs text-slate-500 ml-2">({percentage.toFixed(1)}%)</span>
-                    </div>
-                  </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2">
-                    <div
-                      className={`h-2 rounded-full ${item.color}`}
-                      style={{ width: `${percentage}%` }}
-                    />
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Custos de Aquisição */}
+            <div className="space-y-3">
+              <h4 className="font-medium text-slate-700 text-sm uppercase tracking-wide">Aquisição</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">Entrada</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.entrada)}</span>
                 </div>
-              )
-            })}
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">ITBI</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.itbi)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">Avaliação/Escritura</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.avaliacaoEscritura)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">Registro Cartório</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.registroCartorio)}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-slate-200 font-semibold text-blue-600">
+                  <span className="text-sm">Subtotal</span>
+                  <span className="text-sm">{formatCurrency(results.totalAquisicao)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Custos Operacionais */}
+            <div className="space-y-3">
+              <h4 className="font-medium text-slate-700 text-sm uppercase tracking-wide">Operacionais</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">Financiamento (6m)</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.financiamento6m)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">Condomínio (6m)</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.condominio6m)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">Contas (6m)</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.contas6m)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">Reforma</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.reforma)}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-slate-200 font-semibold text-green-600">
+                  <span className="text-sm">Subtotal</span>
+                  <span className="text-sm">{formatCurrency(results.totalOperacional)}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          
-          <div className="mt-4 pt-4 border-t border-slate-200">
-            <div className="flex justify-between items-center font-semibold">
-              <span>Investimento Total</span>
-              <span className="text-lg">{formatCurrency(results.investimentoTotal)}</span>
+
+          {/* Custos de Saída */}
+          <div className="mt-6 pt-4 border-t border-slate-200">
+            <h4 className="font-medium text-slate-700 text-sm uppercase tracking-wide mb-3">Custos de Saída</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="flex justify-between">
+                <span className="text-sm text-slate-600">Quitação</span>
+                <span className="text-sm font-medium">{formatCurrency(results.quitacaoFinanciamento)}</span>
+              </div>
+              {results.corretagem > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">Corretagem</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.corretagem)}</span>
+                </div>
+              )}
+              {results.impostoRenda > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-600">Imp. Renda</span>
+                  <span className="text-sm font-medium">{formatCurrency(results.impostoRenda)}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Total Geral */}
+          <div className="mt-4 pt-4 border-t-2 border-slate-300">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-slate-900">Investimento Total</span>
+              <span className="text-lg font-bold text-slate-900">{formatCurrency(results.investimentoTotal)}</span>
             </div>
           </div>
         </CardContent>
       </Card>
-
-      {/* Detalhamento Completo */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Custos de Aquisição */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Custos de Aquisição</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-sm">Entrada</span>
-              <span className="font-medium">{formatCurrency(results.entrada)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm">ITBI</span>
-              <span className="font-medium">{formatCurrency(results.itbi)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm">Avaliação/Escritura</span>
-              <span className="font-medium">{formatCurrency(results.avaliacaoEscritura)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm">Registro Cartório</span>
-              <span className="font-medium">{formatCurrency(results.registroCartorio)}</span>
-            </div>
-            <div className="flex justify-between pt-2 border-t border-slate-200 font-semibold">
-              <span>Total</span>
-              <span>{formatCurrency(results.totalAquisicao)}</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Custos Operacionais */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Custos Operacionais</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-sm">Financiamento (6m)</span>
-              <span className="font-medium">{formatCurrency(results.financiamento6m)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm">Condomínio (6m)</span>
-              <span className="font-medium">{formatCurrency(results.condominio6m)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm">Contas (6m)</span>
-              <span className="font-medium">{formatCurrency(results.contas6m)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm">Reforma</span>
-              <span className="font-medium">{formatCurrency(results.reforma)}</span>
-            </div>
-            <div className="flex justify-between pt-2 border-t border-slate-200 font-semibold">
-              <span>Total</span>
-              <span>{formatCurrency(results.totalOperacional)}</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
 
       {/* Alerta de Viabilidade */}
