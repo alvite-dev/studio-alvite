@@ -51,6 +51,7 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
     corretor_id: '',
     corretor_nome_manual: '',
     corretor_telefone_manual: '',
+    data_visita: '',
     horario_visita: '',
     observacoes_pre: '',
   })
@@ -75,11 +76,16 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
         corretor_id: visitaParaEditar.corretor_id || '',
         corretor_nome_manual: visitaParaEditar.corretor_nome_manual || '',
         corretor_telefone_manual: visitaParaEditar.corretor_telefone_manual || '',
+        data_visita: visitaDate.toISOString().split('T')[0], // YYYY-MM-DD
         horario_visita: visitaDate.toTimeString().slice(0, 5), // HH:MM
         observacoes_pre: visitaParaEditar.observacoes_pre || '',
       })
     } else if (!visitaParaEditar && open) {
       // Resetar formulário ao abrir para criar nova visita
+      // Definir data padrão como hoje
+      const hoje = new Date()
+      const dataHoje = hoje.toISOString().split('T')[0]
+      
       setModoManualCorretor(false)
       setModoManualImovel(false)
       setFormData({
@@ -89,6 +95,7 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
         corretor_id: '',
         corretor_nome_manual: '',
         corretor_telefone_manual: '',
+        data_visita: dataHoje,
         horario_visita: '',
         observacoes_pre: '',
       })
@@ -144,6 +151,19 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
       }
     }
 
+    if (!formData.data_visita) {
+      newErrors.data_visita = 'Data é obrigatória'
+    } else {
+      // Validar se a data não é no passado
+      const dataSelecionada = new Date(formData.data_visita)
+      const hoje = new Date()
+      hoje.setHours(0, 0, 0, 0) // Zerar horas para comparar apenas a data
+      
+      if (dataSelecionada < hoje) {
+        newErrors.data_visita = 'Data não pode ser no passado'
+      }
+    }
+
     if (!formData.horario_visita) {
       newErrors.horario_visita = 'Horário é obrigatório'
     }
@@ -168,10 +188,10 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
       return
     }
 
-    // Usar data atual com o horário informado
-    const hoje = new Date()
+    // Usar data e horário informados
+    const [ano, mes, dia] = formData.data_visita.split('-')
     const [horas, minutos] = formData.horario_visita.split(':')
-    const dataHora = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate(), parseInt(horas), parseInt(minutos))
+    const dataHora = new Date(parseInt(ano), parseInt(mes) - 1, parseInt(dia), parseInt(horas), parseInt(minutos))
     
     const visitaData = {
       // Dados do imóvel
@@ -437,20 +457,40 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
             </>
           )}
 
-          {/* Horário */}
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-slate-700">
-              Horário *
-            </label>
-            <Input
-              type="time"
-              value={formData.horario_visita}
-              onChange={handleChange('horario_visita')}
-              className={errors.horario_visita ? 'border-red-300' : ''}
-            />
-            {errors.horario_visita && (
-              <p className="text-xs text-red-600">{errors.horario_visita}</p>
-            )}
+          {/* Data e Horário */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Data */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-slate-700">
+                Data da Visita *
+              </label>
+              <Input
+                type="date"
+                value={formData.data_visita}
+                onChange={handleChange('data_visita')}
+                min={new Date().toISOString().split('T')[0]} // Não permitir datas passadas
+                className={errors.data_visita ? 'border-red-300' : ''}
+              />
+              {errors.data_visita && (
+                <p className="text-xs text-red-600">{errors.data_visita}</p>
+              )}
+            </div>
+
+            {/* Horário */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-slate-700">
+                Horário *
+              </label>
+              <Input
+                type="time"
+                value={formData.horario_visita}
+                onChange={handleChange('horario_visita')}
+                className={errors.horario_visita ? 'border-red-300' : ''}
+              />
+              {errors.horario_visita && (
+                <p className="text-xs text-red-600">{errors.horario_visita}</p>
+              )}
+            </div>
           </div>
 
           {/* Observações */}
