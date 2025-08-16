@@ -18,8 +18,11 @@ export function VisitCard({ visita, isDragging }: VisitCardProps) {
   const imovelEndereco = visita.imovel_endereco_manual || visita.imovel_endereco || 'Endereço não encontrado'
   const imovelLink = visita.imovel_link_manual || visita.imovel_link || ''
 
-  const formatTime = (date: Date) => {
+  const formatDateTime = (date: Date) => {
     return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
     }).format(date)
@@ -107,11 +110,11 @@ export function VisitCard({ visita, isDragging }: VisitCardProps) {
             </>
           )}
 
-          {/* Horário */}
+          {/* Data e Horário */}
           <div className="flex items-center space-x-3">
             <Clock className="w-4 h-4 text-slate-400 flex-shrink-0" />
             <span className="text-sm font-medium text-slate-900">
-              {formatTime(visita.data_hora)}
+              {formatDateTime(visita.data_hora)}
             </span>
           </div>
 

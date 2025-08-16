@@ -153,15 +153,6 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
 
     if (!formData.data_visita) {
       newErrors.data_visita = 'Data é obrigatória'
-    } else {
-      // Validar se a data não é no passado
-      const dataSelecionada = new Date(formData.data_visita)
-      const hoje = new Date()
-      hoje.setHours(0, 0, 0, 0) // Zerar horas para comparar apenas a data
-      
-      if (dataSelecionada < hoje) {
-        newErrors.data_visita = 'Data não pode ser no passado'
-      }
     }
 
     if (!formData.horario_visita) {
@@ -468,7 +459,6 @@ export function VisitForm({ trigger, visitaParaEditar, onSuccess, open: controll
                 type="date"
                 value={formData.data_visita}
                 onChange={handleChange('data_visita')}
-                min={new Date().toISOString().split('T')[0]} // Não permitir datas passadas
                 className={errors.data_visita ? 'border-red-300' : ''}
               />
               {errors.data_visita && (
