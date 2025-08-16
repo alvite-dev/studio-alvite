@@ -7,14 +7,15 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Building, CreditCard, Wrench, Settings, Edit3 } from 'lucide-react'
-import { ViabilityInputs as IViabilityInputs } from '@/hooks/useViabilityCalculator'
+import { ViabilityInputs as IViabilityInputs, ViabilityResults } from '@/hooks/useViabilityCalculator'
 
 interface ViabilityInputsProps {
   inputs: IViabilityInputs
+  results: ViabilityResults
   onUpdate: <K extends keyof IViabilityInputs>(key: K, value: IViabilityInputs[K]) => void
 }
 
-export function ViabilityInputs({ inputs, onUpdate }: ViabilityInputsProps) {
+export function ViabilityInputs({ inputs, results, onUpdate }: ViabilityInputsProps) {
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
 
   const formatCurrency = (value: number) => {
@@ -50,9 +51,14 @@ export function ViabilityInputs({ inputs, onUpdate }: ViabilityInputsProps) {
                 onChange={(e) => onUpdate('valorCompra', Number(e.target.value))}
                 placeholder="830000"
               />
-              <p className="text-xs text-slate-500">
-                {formatCurrency(inputs.valorCompra)}
-              </p>
+              <div className="flex justify-between items-center">
+                <p className="text-xs text-slate-500">
+                  {formatCurrency(inputs.valorCompra)}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {formatCurrency(results.valorM2Compra)}/m²
+                </p>
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="areaUtil">Área Útil (m²)</Label>
@@ -74,9 +80,14 @@ export function ViabilityInputs({ inputs, onUpdate }: ViabilityInputsProps) {
               onChange={(e) => onUpdate('valorVenda', Number(e.target.value))}
               placeholder="1220000"
             />
-            <p className="text-xs text-slate-500">
-              {formatCurrency(inputs.valorVenda)}
-            </p>
+            <div className="flex justify-between items-center">
+              <p className="text-xs text-slate-500">
+                {formatCurrency(inputs.valorVenda)}
+              </p>
+              <p className="text-xs text-slate-500">
+                {formatCurrency(results.valorM2Venda)}/m²
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>

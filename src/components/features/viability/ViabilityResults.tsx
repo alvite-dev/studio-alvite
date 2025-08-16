@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { TrendingUp, DollarSign, PieChart, BarChart3, Target, AlertCircle } from 'lucide-react'
+import { TrendingUp, DollarSign, PieChart, BarChart3, AlertCircle } from 'lucide-react'
 import { ViabilityResults as IViabilityResults } from '@/hooks/useViabilityCalculator'
 
 interface ViabilityResultsProps {
@@ -206,27 +206,6 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
         </Card>
       </div>
 
-      {/* Indicadores Adicionais */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="w-5 h-5 text-slate-600" />
-            Indicadores do Mercado
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <p className="text-sm text-slate-600">Valor/m² de Compra</p>
-              <p className="text-lg font-semibold">{formatCurrency(results.valorM2Compra)}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-slate-600">Valor/m² de Venda</p>
-              <p className="text-lg font-semibold">{formatCurrency(results.valorM2Venda)}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Alerta de Viabilidade */}
       {results.roi < 0.15 && (

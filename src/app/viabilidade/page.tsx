@@ -65,7 +65,7 @@ export default function ViabilidadePage() {
         {/* Content Mobile */}
         <div className="px-4 pb-20">
           {activeTab === 'inputs' ? (
-            <ViabilityInputs inputs={inputs} onUpdate={updateInput} />
+            <ViabilityInputs inputs={inputs} results={results} onUpdate={updateInput} />
           ) : (
             <ViabilityResults results={results} />
           )}
@@ -103,7 +103,7 @@ export default function ViabilidadePage() {
               <Calculator className="w-5 h-5 text-blue-600" />
               <h2 className="text-lg font-semibold text-slate-900">Parâmetros do Investimento</h2>
             </div>
-            <ViabilityInputs inputs={inputs} onUpdate={updateInput} />
+            <ViabilityInputs inputs={inputs} results={results} onUpdate={updateInput} />
           </div>
 
           {/* Results Column */}
