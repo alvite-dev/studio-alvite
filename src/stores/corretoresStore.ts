@@ -6,6 +6,7 @@ export interface Corretor {
   nome: string
   telefone: string
   imobiliaria?: string
+  bairros?: string[]
 }
 
 interface CorretoresState {
@@ -22,7 +23,7 @@ interface CorretoresState {
 const carregarCorretoresDoSupabase = async (): Promise<Corretor[]> => {
   const { data, error } = await supabase
     .from('corretores')
-    .select('id, nome, telefone, imobiliaria')
+    .select('id, nome, telefone, imobiliaria, bairros')
     .order('nome')
 
   if (error) {

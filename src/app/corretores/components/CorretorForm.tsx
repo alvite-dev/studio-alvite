@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { CorretorCompleto } from '../types/corretor'
+import { BairroSelector } from './BairroSelector'
 import { useIsMobile } from '@/hooks/useIsMobile'
 
 interface CorretorFormProps {
@@ -26,7 +27,8 @@ export function CorretorForm({
   const [formData, setFormData] = useState<Partial<CorretorCompleto>>({
     nome: '',
     telefone: '',
-    imobiliaria: ''
+    imobiliaria: '',
+    bairros: []
   })
 
   // Atualizar formData quando corretor mudar
@@ -35,14 +37,16 @@ export function CorretorForm({
       setFormData({
         nome: corretor.nome || '',
         telefone: corretor.telefone || '',
-        imobiliaria: corretor.imobiliaria || ''
+        imobiliaria: corretor.imobiliaria || '',
+        bairros: corretor.bairros || []
       })
     } else {
       // Limpar formulário para novo corretor
       setFormData({
         nome: '',
         telefone: '',
-        imobiliaria: ''
+        imobiliaria: '',
+        bairros: []
       })
     }
   }, [corretor])
@@ -109,6 +113,15 @@ export function CorretorForm({
               id="imobiliaria"
               value={formData.imobiliaria}
               onChange={(e) => handleInputChange('imobiliaria', e.target.value)}
+            />
+          </div>
+
+          {/* Bairros */}
+          <div className="space-y-2">
+            <Label>Áreas de Atuação</Label>
+            <BairroSelector
+              bairros={formData.bairros || []}
+              onChange={(bairros) => setFormData(prev => ({ ...prev, bairros }))}
             />
           </div>
 

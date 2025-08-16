@@ -10,16 +10,16 @@ import {
   TableRow 
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Edit, MessageCircle, Trash2, ArrowUpDown, Phone } from 'lucide-react'
+import { MessageCircle, Trash2, ArrowUpDown, Phone, Info } from 'lucide-react'
 import { CorretorCompleto } from '../types/corretor'
-import { cn } from '@/lib/utils'
+import { BairroTags } from './BairroTags'
 
 interface CorretoresTableProps {
   corretores: CorretorCompleto[]
   onEdit: (corretor: CorretorCompleto) => void
   onDelete: (id: string) => void
   onWhatsApp: (telefone: string) => void
+  onInfo: (corretor: CorretorCompleto) => void
 }
 
 type SortField = keyof CorretorCompleto
@@ -29,7 +29,8 @@ export function CorretoresTable({
   corretores, 
   onEdit, 
   onDelete, 
-  onWhatsApp 
+  onWhatsApp,
+  onInfo
 }: CorretoresTableProps) {
   const [sortField, setSortField] = useState<SortField>('nome')
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
@@ -58,10 +59,6 @@ export function CorretoresTable({
     return telefone.replace(/\D/g, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
   }
 
-  const formatWhatsAppUrl = (telefone: string) => {
-    const cleanPhone = telefone.replace(/\D/g, '')
-    return `https://wa.me/55${cleanPhone}`
-  }
 
   const SortableHeader = ({ 
     field, 
@@ -102,7 +99,7 @@ export function CorretoresTable({
 
   return (
     <div className="h-full border border-slate-200 rounded-lg overflow-hidden">
-      <div className="h-full overflow-auto">
+      <div className="h-full overflow-auto overscroll-contain">
         <Table>
           <TableHeader className="sticky top-0 bg-slate-50/80 backdrop-blur-sm border-b border-slate-200">
             <TableRow>
@@ -110,20 +107,21 @@ export function CorretoresTable({
               <SortableHeader field="telefone" className="hidden sm:table-cell">
                 Telefone
               </SortableHeader>
-              <SortableHeader field="imobiliaria" className="hidden md:table-cell">
+              <SortableHeader field="imobiliaria" className="hidden lg:table-cell">
                 Imobiliária
               </SortableHeader>
+              <TableHead className="hidden md:table-cell">Bairros</TableHead>
               <TableHead className="text-left">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {sortedCorretores.map((corretor) => (
               <TableRow key={corretor.id}>
-                <TableCell>
-                  <div className="min-w-0">
-                    <div className="font-medium text-slate-900">{corretor.nome}</div>
+                <TableCell className="min-w-0">
+                  <div className="min-w-0 pr-2">
+                    <div className="font-medium text-slate-900 truncate">{corretor.nome}</div>
                     {/* Mobile: mostrar telefone abaixo do nome */}
-                    <div className="sm:hidden text-sm text-slate-500">
+                    <div className="sm:hidden text-sm text-slate-500 truncate">
                       {formatTelefone(corretor.telefone)}
                     </div>
                   </div>
@@ -133,27 +131,31 @@ export function CorretoresTable({
                   <div className="text-sm text-slate-900">{formatTelefone(corretor.telefone)}</div>
                 </TableCell>
                 
-                <TableCell className="hidden md:table-cell">
+                <TableCell className="hidden lg:table-cell">
                   <div className="text-sm text-slate-900">{corretor.imobiliaria}</div>
                 </TableCell>
+
+                <TableCell className="hidden md:table-cell">
+                  <BairroTags bairros={corretor.bairros} maxTags={3} />
+                </TableCell>
                 
-                <TableCell className="text-left">
-                  <div className="flex items-center justify-start space-x-2">
+                <TableCell className="text-left w-[140px] sm:w-auto">
+                  <div className="flex items-center justify-start space-x-1 sm:space-x-2">
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => onEdit(corretor)}
-                      className="h-10 w-10 p-0"
-                      title="Editar corretor"
+                      onClick={() => onInfo(corretor)}
+                      className="h-10 w-10 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50 shrink-0"
+                      title="Ver informações"
                     >
-                      <Edit className="h-5 w-5" />
+                      <Info className="h-5 w-5" />
                     </Button>
                     
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onWhatsApp(corretor.telefone)}
-                      className="h-10 w-10 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                      className="h-10 w-10 p-0 text-green-600 hover:text-green-700 hover:bg-green-50 shrink-0"
                       title="Abrir WhatsApp"
                     >
                       <MessageCircle className="h-5 w-5" />
@@ -163,7 +165,7 @@ export function CorretoresTable({
                       variant="ghost"
                       size="sm"
                       onClick={() => onDelete(corretor.id)}
-                      className="h-10 w-10 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="h-10 w-10 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 shrink-0"
                       title="Excluir corretor"
                     >
                       <Trash2 className="h-5 w-5" />

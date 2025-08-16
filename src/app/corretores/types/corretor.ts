@@ -3,6 +3,7 @@ export interface CorretorCompleto {
   nome: string
   telefone: string
   imobiliaria?: string
+  bairros?: string[]
   created_at?: string
   updated_at?: string
 }

@@ -7,6 +7,7 @@ import PageHeader from '@/components/features/PageHeader'
 import { CorretoresTable } from './components/CorretoresTable'
 import { CorretoresFilters } from './components/CorretoresFilters'
 import { CorretorForm } from './components/CorretorForm'
+import { CorretorInfoModal } from './components/CorretorInfoModal'
 import { CorretorCompleto, CorretorFiltros } from './types/corretor'
 import { useCorretoresStore } from '@/stores/corretoresStore'
 
@@ -26,6 +27,8 @@ export default function CorretoresPage() {
   })
   const [formOpen, setFormOpen] = useState(false)
   const [corretorEditando, setCorretorEditando] = useState<CorretorCompleto | null>(null)
+  const [infoModalOpen, setInfoModalOpen] = useState(false)
+  const [corretorVisualizando, setCorretorVisualizando] = useState<CorretorCompleto | null>(null)
 
   // Carregar corretores ao montar o componente
   useEffect(() => {
@@ -38,14 +41,13 @@ export default function CorretoresPage() {
       const matchBusca = !filtros.busca || 
         corretor.nome.toLowerCase().includes(filtros.busca.toLowerCase()) ||
         corretor.telefone.toLowerCase().includes(filtros.busca.toLowerCase()) ||
-        corretor.imobiliaria?.toLowerCase().includes(filtros.busca.toLowerCase())
+        corretor.imobiliaria?.toLowerCase().includes(filtros.busca.toLowerCase()) ||
+        corretor.bairros?.some(bairro => bairro.toLowerCase().includes(filtros.busca.toLowerCase()))
 
       return matchBusca
     })
   }, [corretores, filtros])
 
-  // Não há mais regiões nos dados
-  const regioes: string[] = []
 
   const handleEdit = (corretor: CorretorCompleto) => {
     setCorretorEditando(corretor)
@@ -68,6 +70,11 @@ export default function CorretoresPage() {
     window.open(whatsappUrl, '_blank')
   }
 
+  const handleInfo = (corretor: CorretorCompleto) => {
+    setCorretorVisualizando(corretor)
+    setInfoModalOpen(true)
+  }
+
   const handleAddCorretor = () => {
     setCorretorEditando(null)
     setFormOpen(true)
@@ -83,7 +90,8 @@ export default function CorretoresPage() {
         await adicionarCorretor({
           nome: corretorData.nome || '',
           telefone: corretorData.telefone || '',
-          imobiliaria: corretorData.imobiliaria
+          imobiliaria: corretorData.imobiliaria,
+          bairros: corretorData.bairros
         })
       }
       setFormOpen(false)
@@ -94,7 +102,7 @@ export default function CorretoresPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-72px)] md:h-screen flex flex-col bg-white">
+    <div className="h-[calc(100dvh-72px)] md:h-screen flex flex-col bg-white overflow-hidden">
       
       <PageHeader
         title="Corretores"
@@ -112,7 +120,7 @@ export default function CorretoresPage() {
         onFiltrosChange={setFiltros}
       />
 
-      <div className="flex-1 overflow-hidden px-6 sm:px-8 py-6">
+      <div className="flex-1 min-h-0 overflow-hidden px-4 sm:px-6 md:px-8 py-4 sm:py-6">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
@@ -124,6 +132,7 @@ export default function CorretoresPage() {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onWhatsApp={handleWhatsApp}
+            onInfo={handleInfo}
           />
         )}
       </div>
@@ -133,6 +142,14 @@ export default function CorretoresPage() {
         open={formOpen}
         onOpenChange={setFormOpen}
         onSave={handleSaveCorretor}
+      />
+
+      <CorretorInfoModal
+        corretor={corretorVisualizando}
+        open={infoModalOpen}
+        onOpenChange={setInfoModalOpen}
+        onEdit={handleEdit}
+        onWhatsApp={handleWhatsApp}
       />
     </div>
   )
