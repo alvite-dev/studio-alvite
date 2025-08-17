@@ -5,15 +5,16 @@ import { Input } from './input'
 import { cn } from '@/lib/utils'
 
 interface CurrencyInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
-  value: number
-  onChange: (value: number) => void
+  value: number | null
+  onChange: (value: number | null) => void
 }
 
 export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
   ({ value, onChange, className, ...props }, ref) => {
     const [displayValue, setDisplayValue] = useState('')
 
-    const formatCurrency = (amount: number) => {
+    const formatCurrency = (amount: number | null) => {
+      if (amount === null || amount === 0) return ''
       return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL',
@@ -22,10 +23,10 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
       }).format(amount)
     }
 
-    const parseCurrencyString = (str: string): number => {
+    const parseCurrencyString = (str: string): number | null => {
       // Remove todos os caracteres que não são dígitos
       const numbersOnly = str.replace(/\D/g, '')
-      return numbersOnly ? parseInt(numbersOnly, 10) : 0
+      return numbersOnly ? parseInt(numbersOnly, 10) : null
     }
 
     useEffect(() => {
@@ -42,7 +43,7 @@ export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(
 
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       // Quando foca, mostra apenas os números para facilitar edição
-      setDisplayValue(value.toString())
+      setDisplayValue(value?.toString() || '')
       e.target.select()
     }
 

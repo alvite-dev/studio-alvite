@@ -4,10 +4,10 @@ import { useState, useMemo } from 'react'
 
 export interface ViabilityInputs {
   // Dados básicos
-  valorAnuncio: number
-  valorCompra: number
-  areaUtil: number
-  valorVenda: number
+  valorAnuncio: number | null
+  valorCompra: number | null
+  areaUtil: number | null
+  valorVenda: number | null
   
   // Financiamento
   percentualEntrada: number // 0.2 = 20%
@@ -16,8 +16,9 @@ export interface ViabilityInputs {
   
   // Custos extras
   percentualReforma: number // 0.12 = 12%
-  valorCondominio: number // mensal
-  valorContas: number // mensal
+  valorCondominio: number | null // mensal
+  valorIPTU: number | null // mensal
+  valorContasGerais: number | null // mensal
   
   // Opcionais
   incluirCorretagem: boolean
@@ -59,16 +60,17 @@ export interface ViabilityResults {
 }
 
 const defaultInputs: ViabilityInputs = {
-  valorAnuncio: 950000,
-  valorCompra: 830000,
-  areaUtil: 105,
-  valorVenda: 1220000,
+  valorAnuncio: null,
+  valorCompra: null,
+  areaUtil: null,
+  valorVenda: null,
   percentualEntrada: 0.2,
   percentualITBI: 0.03,
   mesesFinanciamento: 6,
   percentualReforma: 0.12,
-  valorCondominio: 1700,
-  valorContas: 344, // (144+200)
+  valorCondominio: null,
+  valorIPTU: null,
+  valorContasGerais: null,
   incluirCorretagem: true,
   percentualCorretagem: 0.05,
   incluirIR: true,
@@ -91,11 +93,39 @@ export function useViabilityCalculator(initialInputs?: Partial<ViabilityInputs>)
       mesesFinanciamento,
       percentualReforma,
       valorCondominio,
-      valorContas,
+      valorIPTU,
+      valorContasGerais,
       incluirCorretagem,
       percentualCorretagem,
       incluirIR
     } = inputs
+
+    // Se valores essenciais são null, retorna valores zerados
+    if (valorCompra === null || valorVenda === null) {
+      return {
+        entrada: 0,
+        itbi: 0,
+        avaliacaoEscritura: 0,
+        registroCartorio: 0,
+        totalAquisicao: 0,
+        financiamento6m: 0,
+        condominio6m: 0,
+        contas6m: 0,
+        reforma: 0,
+        totalOperacional: 0,
+        custosDesembolsados: 0,
+        quitacaoFinanciamento: 0,
+        corretagem: 0,
+        impostoRenda: 0,
+        lucro: 0,
+        roi: 0,
+        valorizacao: 0,
+        valorM2Compra: 0,
+        valorM2Venda: 0,
+        investimentoTotal: 0,
+        descontoAnuncio: 0
+      }
+    }
 
     // Custos de aquisição (baseado nas fórmulas do PAC)
     const entrada = valorCompra * percentualEntrada
@@ -106,8 +136,8 @@ export function useViabilityCalculator(initialInputs?: Partial<ViabilityInputs>)
 
     // Custos operacionais
     const financiamento6m = valorCompra * 0.01 * mesesFinanciamento // 1% a.m.
-    const condominio6m = valorCondominio * mesesFinanciamento
-    const contas6m = valorContas * mesesFinanciamento
+    const condominio6m = (valorCondominio || 0) * mesesFinanciamento
+    const contas6m = ((valorIPTU || 0) + (valorContasGerais || 0)) * mesesFinanciamento
     const reforma = valorCompra * percentualReforma
     const totalOperacional = financiamento6m + condominio6m + contas6m + reforma
 
@@ -129,11 +159,11 @@ export function useViabilityCalculator(initialInputs?: Partial<ViabilityInputs>)
 
     // Métricas adicionais
     const valorizacao = valorVenda > 0 ? (valorVenda / valorCompra) - 1 : 0
-    const valorM2Compra = areaUtil > 0 ? valorCompra / areaUtil : 0
-    const valorM2Venda = areaUtil > 0 ? valorVenda / areaUtil : 0
+    const valorM2Compra = (areaUtil || 0) > 0 ? valorCompra / (areaUtil || 1) : 0
+    const valorM2Venda = (areaUtil || 0) > 0 ? valorVenda / (areaUtil || 1) : 0
     
     // Cálculo do desconto do anúncio
-    const descontoAnuncio = valorAnuncio > 0 ? (valorAnuncio - valorCompra) / valorAnuncio : 0
+    const descontoAnuncio = (valorAnuncio || 0) > 0 ? ((valorAnuncio || 0) - valorCompra) / (valorAnuncio || 1) : 0
 
     return {
       entrada,

@@ -3,7 +3,6 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
 import { CurrencyInput } from '@/components/ui/currency-input'
 import { ViabilityInputs, ViabilityResults } from '@/hooks/useViabilityCalculator'
 
@@ -42,9 +41,11 @@ export function MainInputs({ inputs, results, onUpdate }: MainInputsProps) {
               />
             </div>
             <div className="text-right text-sm text-slate-500 pb-2">
-              <div className="text-blue-600 font-medium">
-                {(results.descontoAnuncio * 100).toFixed(1)}% desconto
-              </div>
+              {inputs.valorAnuncio && inputs.valorCompra && (
+                <div className="text-blue-600 font-medium">
+                  {(results.descontoAnuncio * 100).toFixed(1)}% desconto
+                </div>
+              )}
             </div>
           </div>
 
@@ -63,7 +64,9 @@ export function MainInputs({ inputs, results, onUpdate }: MainInputsProps) {
               />
             </div>
             <div className="text-right text-sm text-slate-500 pb-2">
-              <div>{formatCurrency(results.valorM2Compra)}/m²</div>
+              {inputs.valorCompra && inputs.areaUtil && (
+                <div>{formatCurrency(results.valorM2Compra)}/m²</div>
+              )}
             </div>
           </div>
 
@@ -82,7 +85,9 @@ export function MainInputs({ inputs, results, onUpdate }: MainInputsProps) {
               />
             </div>
             <div className="text-right text-sm text-slate-500 pb-2">
-              <div>{formatCurrency(results.valorM2Venda)}/m²</div>
+              {inputs.valorVenda && inputs.areaUtil && (
+                <div>{formatCurrency(results.valorM2Venda)}/m²</div>
+              )}
             </div>
           </div>
         </div>
@@ -97,8 +102,8 @@ export function MainInputs({ inputs, results, onUpdate }: MainInputsProps) {
               <Input
                 id="areaUtil"
                 type="number"
-                value={inputs.areaUtil}
-                onChange={(e) => onUpdate('areaUtil', Number(e.target.value))}
+                value={inputs.areaUtil || ''}
+                onChange={(e) => onUpdate('areaUtil', e.target.value ? Number(e.target.value) : null)}
                 className="text-lg h-12 w-32"
                 placeholder="105"
               />
@@ -121,7 +126,7 @@ export function MainInputs({ inputs, results, onUpdate }: MainInputsProps) {
                 min="0"
                 max="100"
                 value={(inputs.percentualReforma * 100).toFixed(0)}
-                onChange={(e) => onUpdate('percentualReforma', Number(e.target.value) / 100)}
+                onChange={(e) => onUpdate('percentualReforma', Number(e.target.value || 0) / 100)}
                 className="text-lg h-12 w-20"
                 placeholder="12"
               />
@@ -129,7 +134,9 @@ export function MainInputs({ inputs, results, onUpdate }: MainInputsProps) {
             </div>
           </div>
           <div className="text-right text-sm text-slate-500 pb-2">
-            <div>{formatCurrency(results.reforma)}</div>
+            {inputs.valorCompra && (
+              <div>{formatCurrency(results.reforma)}</div>
+            )}
           </div>
         </div>
 
@@ -154,11 +161,8 @@ export function MainInputs({ inputs, results, onUpdate }: MainInputsProps) {
               </Label>
               <CurrencyInput
                 id="valorIPTU"
-                value={Math.floor(inputs.valorContas * 0.4)}
-                onChange={(iptu) => {
-                  const contasGerais = inputs.valorContas - Math.floor(inputs.valorContas * 0.4)
-                  onUpdate('valorContas', iptu + contasGerais)
-                }}
+                value={inputs.valorIPTU}
+                onChange={(value) => onUpdate('valorIPTU', value)}
                 className="h-10"
                 placeholder="144"
               />
@@ -169,11 +173,8 @@ export function MainInputs({ inputs, results, onUpdate }: MainInputsProps) {
               </Label>
               <CurrencyInput
                 id="valorContasGerais"
-                value={inputs.valorContas - Math.floor(inputs.valorContas * 0.4)}
-                onChange={(contasGerais) => {
-                  const iptu = Math.floor(inputs.valorContas * 0.4)
-                  onUpdate('valorContas', iptu + contasGerais)
-                }}
+                value={inputs.valorContasGerais}
+                onChange={(value) => onUpdate('valorContasGerais', value)}
                 className="h-10"
                 placeholder="200"
               />
