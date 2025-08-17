@@ -35,6 +35,11 @@ export interface Imovel {
   valor_venda?: number;
   data_venda?: Date;
   
+  // Custos mensais
+  valor_condominio?: number;
+  valor_iptu?: number;
+  valor_contas_gerais?: number;
+  
   // Controle de processo
   status_processo: StatusProcesso;
   observacoes?: string;

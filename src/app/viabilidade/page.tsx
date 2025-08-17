@@ -6,7 +6,9 @@ import PageHeader from '@/components/features/PageHeader'
 import { MainInputs } from '@/components/features/viability/MainInputs'
 import { ResultsCard } from '@/components/features/viability/ResultsCard'
 import { AdvancedModal } from '@/components/features/viability/AdvancedModal'
-import { useViabilityCalculator } from '@/hooks/useViabilityCalculator'
+import { PropertySelector } from '@/components/features/viability/PropertySelector'
+import { PropertySelectionCard } from '@/components/features/viability/PropertySelectionCard'
+import { useViabilityCalculator, ViabilityInputs } from '@/hooks/useViabilityCalculator'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { RotateCcw } from 'lucide-react'
 
@@ -14,6 +16,33 @@ export default function ViabilidadePage() {
   const { inputs, results, updateInput, resetToDefaults } = useViabilityCalculator()
   const isMobile = useIsMobile()
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
+  const [isPropertySelectorOpen, setIsPropertySelectorOpen] = useState(false)
+  const [hasSelectedProperty, setHasSelectedProperty] = useState(false)
+  const [showInputs, setShowInputs] = useState(false) // Controla se mostra inputs ou card de seleção
+
+  const handlePropertySelection = (propertyInputs: Partial<ViabilityInputs>) => {
+    // Aplicar os valores do imóvel selecionado
+    Object.entries(propertyInputs).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        updateInput(key as keyof ViabilityInputs, value)
+      }
+    })
+    setHasSelectedProperty(true)
+    setShowInputs(true)
+    setIsPropertySelectorOpen(false)
+  }
+
+  const handleManualEntry = () => {
+    setHasSelectedProperty(false)
+    setShowInputs(true)
+    resetToDefaults()
+  }
+
+  const handleReset = () => {
+    setHasSelectedProperty(false)
+    setShowInputs(false)
+    resetToDefaults()
+  }
 
   if (isMobile) {
     return (
@@ -22,16 +51,16 @@ export default function ViabilidadePage() {
         <div className="sticky top-0 z-10 bg-white border-b border-slate-200">
           <PageHeader
             title="Calculadora de Viabilidade"
-            description="Análise financeira para investimentos imobiliários"
+            description=""
             action={
               <Button
                 variant="outline"
                 size="sm"
-                onClick={resetToDefaults}
+                onClick={handleReset}
                 className="gap-2"
               >
                 <RotateCcw className="w-4 h-4" />
-                Reset
+                {showInputs ? 'Nova Análise' : 'Reset'}
               </Button>
             }
           />
@@ -39,15 +68,25 @@ export default function ViabilidadePage() {
 
         {/* Content Mobile */}
         <div className="px-4 pt-12 pb-20 space-y-8">
-          <MainInputs 
-            inputs={inputs} 
-            results={results} 
-            onUpdate={updateInput} 
-          />
-          <ResultsCard 
-            results={results} 
-            onOpenAdvanced={() => setIsAdvancedOpen(true)} 
-          />
+          {!showInputs ? (
+            <PropertySelectionCard
+              onSelectProperty={() => setIsPropertySelectorOpen(true)}
+              onManualEntry={handleManualEntry}
+              hasSelectedProperty={hasSelectedProperty}
+            />
+          ) : (
+            <>
+              <MainInputs 
+                inputs={inputs} 
+                results={results} 
+                onUpdate={updateInput} 
+              />
+              <ResultsCard 
+                results={results} 
+                onOpenAdvanced={() => setIsAdvancedOpen(true)} 
+              />
+            </>
+          )}
         </div>
 
         {/* Advanced Modal */}
@@ -57,6 +96,13 @@ export default function ViabilidadePage() {
           inputs={inputs}
           results={results}
           onUpdate={updateInput}
+        />
+
+        {/* Property Selector Modal */}
+        <PropertySelector
+          isOpen={isPropertySelectorOpen}
+          onClose={() => setIsPropertySelectorOpen(false)}
+          onSelectProperty={handlePropertySelection}
         />
       </div>
     )
@@ -73,28 +119,36 @@ export default function ViabilidadePage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={resetToDefaults}
+            onClick={handleReset}
             className="gap-2"
           >
             <RotateCcw className="w-4 h-4" />
-            Reset
+            {showInputs ? 'Nova Análise' : 'Reset'}
           </Button>
         }
       />
 
-      {/* Content Desktop - New Minimal Layout */}
+      {/* Content Desktop - New Layout with Left Column Toggle */}
       <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Inputs Column */}
+          {/* Left Column - Selection Card OR Inputs */}
           <div className="pt-6">
-            <MainInputs 
-              inputs={inputs} 
-              results={results} 
-              onUpdate={updateInput} 
-            />
+            {!showInputs ? (
+              <PropertySelectionCard
+                onSelectProperty={() => setIsPropertySelectorOpen(true)}
+                onManualEntry={handleManualEntry}
+                hasSelectedProperty={hasSelectedProperty}
+              />
+            ) : (
+              <MainInputs 
+                inputs={inputs} 
+                results={results} 
+                onUpdate={updateInput} 
+              />
+            )}
           </div>
 
-          {/* Results Column */}
+          {/* Right Column - Results */}
           <div className="pt-6">
             <ResultsCard 
               results={results} 
@@ -111,6 +165,13 @@ export default function ViabilidadePage() {
         inputs={inputs}
         results={results}
         onUpdate={updateInput}
+      />
+
+      {/* Property Selector Modal */}
+      <PropertySelector
+        isOpen={isPropertySelectorOpen}
+        onClose={() => setIsPropertySelectorOpen(false)}
+        onSelectProperty={handlePropertySelection}
       />
     </div>
   )

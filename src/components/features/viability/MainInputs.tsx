@@ -142,7 +142,7 @@ export function MainInputs({ inputs, results, onUpdate }: MainInputsProps) {
 
         {/* Custos Mensais */}
         <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4 max-sm:grid-cols-1 max-sm:gap-3">
             <div className="space-y-2">
               <Label htmlFor="valorCondominio" className="text-sm">
                 Condomínio
