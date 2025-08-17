@@ -43,11 +43,11 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
 
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Resumo Principal */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-3">
         <Card className={`border-2 ${getROIColor(results.roi)} border-opacity-20`}>
-          <CardContent className="p-4">
+          <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-slate-600">ROI</p>
@@ -64,7 +64,7 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-slate-600">Lucro Projetado</p>
@@ -81,7 +81,7 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-slate-600">Valorização</p>
@@ -100,10 +100,10 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
 
       {/* Resumo de Custos */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <PieChart className="w-5 h-5 text-slate-600" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <PieChart className="w-4 h-4 text-slate-600" />
               Resumo de Custos
             </CardTitle>
             <button 
@@ -115,23 +115,23 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
             </button>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
+        <CardContent className="pt-2">
+          <div className="space-y-2">
             {/* Subtotais */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-3 bg-blue-50 rounded-lg">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center p-2 bg-blue-50 rounded-lg">
                 <p className="text-xs text-blue-600 font-medium">AQUISIÇÃO</p>
-                <p className="text-lg font-semibold text-blue-700">{formatCurrency(results.totalAquisicao)}</p>
+                <p className="text-base font-semibold text-blue-700">{formatCurrency(results.totalAquisicao)}</p>
               </div>
-              <div className="text-center p-3 bg-green-50 rounded-lg">
+              <div className="text-center p-2 bg-green-50 rounded-lg">
                 <p className="text-xs text-green-600 font-medium">OPERACIONAIS</p>
-                <p className="text-lg font-semibold text-green-700">{formatCurrency(results.totalOperacional)}</p>
+                <p className="text-base font-semibold text-green-700">{formatCurrency(results.totalOperacional)}</p>
               </div>
             </div>
 
             {/* Custos de Saída */}
             {(results.quitacaoFinanciamento > 0 || results.corretagem > 0 || results.impostoRenda > 0) && (
-              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-200">
+              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200">
                 <div className="text-center">
                   <p className="text-xs text-slate-500">Quitação</p>
                   <p className="text-sm font-medium">{formatCurrency(results.quitacaoFinanciamento)}</p>
@@ -152,10 +152,10 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
             )}
 
             {/* Total Geral */}
-            <div className="pt-3 border-t-2 border-slate-300">
+            <div className="pt-2 border-t-2 border-slate-300">
               <div className="flex justify-between items-center">
                 <span className="font-semibold text-slate-900">Investimento Total</span>
-                <span className="text-xl font-bold text-slate-900">{formatCurrency(results.investimentoTotal)}</span>
+                <span className="text-lg font-bold text-slate-900">{formatCurrency(results.investimentoTotal)}</span>
               </div>
             </div>
           </div>
@@ -166,13 +166,13 @@ export function ViabilityResults({ results }: ViabilityResultsProps) {
       {/* Alerta de Viabilidade */}
       {results.roi < 0.15 && (
         <Card className="border-orange-200 bg-orange-50">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-orange-600 mt-0.5" />
+          <CardContent className="p-3">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-orange-600 mt-0.5" />
               <div>
-                <h4 className="font-medium text-orange-800">Atenção à Viabilidade</h4>
-                <p className="text-sm text-orange-700 mt-1">
-                  O ROI projetado está abaixo de 15%. Considere revisar os parâmetros ou avaliar outros investimentos.
+                <h4 className="font-medium text-orange-800 text-sm">Atenção à Viabilidade</h4>
+                <p className="text-xs text-orange-700 mt-1">
+                  ROI abaixo de 15%. Revisar parâmetros.
                 </p>
               </div>
             </div>

@@ -41,8 +41,8 @@ export function ViabilityInputs({ inputs, results, onUpdate }: ViabilityInputsPr
             Dados Básicos do Imóvel
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="valorCompra">Valor de Compra</Label>
               <Input
@@ -71,23 +71,23 @@ export function ViabilityInputs({ inputs, results, onUpdate }: ViabilityInputsPr
                 placeholder="105"
               />
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="valorVenda">Valor de Venda Projetado</Label>
-            <Input
-              id="valorVenda"
-              type="number"
-              value={inputs.valorVenda}
-              onChange={(e) => onUpdate('valorVenda', Number(e.target.value))}
-              placeholder="1220000"
-            />
-            <div className="flex justify-between items-center">
-              <p className="text-xs text-slate-500">
-                {formatCurrency(inputs.valorVenda)}
-              </p>
-              <p className="text-xs text-slate-500">
-                {formatCurrency(results.valorM2Venda)}/m²
-              </p>
+            <div className="space-y-2">
+              <Label htmlFor="valorVenda">Valor de Venda Projetado</Label>
+              <Input
+                id="valorVenda"
+                type="number"
+                value={inputs.valorVenda}
+                onChange={(e) => onUpdate('valorVenda', Number(e.target.value))}
+                placeholder="1220000"
+              />
+              <div className="flex justify-between items-center">
+                <p className="text-xs text-slate-500">
+                  {formatCurrency(inputs.valorVenda)}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {formatCurrency(results.valorM2Venda)}/m²
+                </p>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -132,7 +132,7 @@ export function ViabilityInputs({ inputs, results, onUpdate }: ViabilityInputsPr
           {/* Campos editáveis (expandível) */}
           {isAdvancedOpen && (
             <div className="space-y-4 pt-3 border-t border-slate-200">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="percentualEntrada">Percentual de Entrada</Label>
                   <div className="flex items-center gap-2">
@@ -163,17 +163,17 @@ export function ViabilityInputs({ inputs, results, onUpdate }: ViabilityInputsPr
                     <Badge variant="outline">{formatPercentage(inputs.percentualITBI)}</Badge>
                   </div>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="mesesFinanciamento">Período (meses)</Label>
-                <Input
-                  id="mesesFinanciamento"
-                  type="number"
-                  min="1"
-                  max="24"
-                  value={inputs.mesesFinanciamento}
-                  onChange={(e) => onUpdate('mesesFinanciamento', Number(e.target.value))}
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="mesesFinanciamento">Período (meses)</Label>
+                  <Input
+                    id="mesesFinanciamento"
+                    type="number"
+                    min="1"
+                    max="24"
+                    value={inputs.mesesFinanciamento}
+                    onChange={(e) => onUpdate('mesesFinanciamento', Number(e.target.value))}
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -189,22 +189,22 @@ export function ViabilityInputs({ inputs, results, onUpdate }: ViabilityInputsPr
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="space-y-2">
-            <Label htmlFor="percentualReforma">Reforma (% do valor)</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="percentualReforma"
-                type="number"
-                step="0.01"
-                min="0"
-                max="1"
-                value={inputs.percentualReforma}
-                onChange={(e) => onUpdate('percentualReforma', Number(e.target.value))}
-              />
-              <Badge variant="outline">{formatPercentage(inputs.percentualReforma)}</Badge>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="percentualReforma">Reforma (% do valor)</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  id="percentualReforma"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="1"
+                  value={inputs.percentualReforma}
+                  onChange={(e) => onUpdate('percentualReforma', Number(e.target.value))}
+                />
+                <Badge variant="outline">{formatPercentage(inputs.percentualReforma)}</Badge>
+              </div>
             </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="valorCondominio">Condomínio (mensal)</Label>
               <Input

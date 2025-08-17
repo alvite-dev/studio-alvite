@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 
 export interface ViabilityInputs {
   // Dados básicos
+  valorAnuncio: number
   valorCompra: number
   areaUtil: number
   valorVenda: number
@@ -54,9 +55,11 @@ export interface ViabilityResults {
   valorM2Compra: number
   valorM2Venda: number
   investimentoTotal: number
+  descontoAnuncio: number // %
 }
 
 const defaultInputs: ViabilityInputs = {
+  valorAnuncio: 950000,
   valorCompra: 830000,
   areaUtil: 105,
   valorVenda: 1220000,
@@ -79,6 +82,7 @@ export function useViabilityCalculator(initialInputs?: Partial<ViabilityInputs>)
 
   const results = useMemo((): ViabilityResults => {
     const {
+      valorAnuncio,
       valorCompra,
       areaUtil,
       valorVenda,
@@ -127,6 +131,9 @@ export function useViabilityCalculator(initialInputs?: Partial<ViabilityInputs>)
     const valorizacao = valorVenda > 0 ? (valorVenda / valorCompra) - 1 : 0
     const valorM2Compra = areaUtil > 0 ? valorCompra / areaUtil : 0
     const valorM2Venda = areaUtil > 0 ? valorVenda / areaUtil : 0
+    
+    // Cálculo do desconto do anúncio
+    const descontoAnuncio = valorAnuncio > 0 ? (valorAnuncio - valorCompra) / valorAnuncio : 0
 
     return {
       entrada,
@@ -148,7 +155,8 @@ export function useViabilityCalculator(initialInputs?: Partial<ViabilityInputs>)
       valorizacao,
       valorM2Compra,
       valorM2Venda,
-      investimentoTotal
+      investimentoTotal,
+      descontoAnuncio
     }
   }, [inputs])
 
