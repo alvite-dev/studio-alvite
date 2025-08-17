@@ -46,8 +46,7 @@ export function usePropertySelection(): UsePropertySelectionReturn {
       imovel.titulo?.toLowerCase().includes(searchLower) ||
       imovel.endereco_completo?.toLowerCase().includes(searchLower) ||
       imovel.bairro?.toLowerCase().includes(searchLower) ||
-      imovel.cidade?.toLowerCase().includes(searchLower) ||
-      imovel.fonte_prospeccao?.toLowerCase().includes(searchLower)
+      imovel.cidade?.toLowerCase().includes(searchLower)
     )
   })
 
