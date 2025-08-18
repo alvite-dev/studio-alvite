@@ -2,27 +2,10 @@ import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
 import { PropertyData } from '../lib/types'
 import { ViabilityInputs } from '../hooks/useViabilityCalculator'
+import { ImovelCompleto } from '../app/imoveis/types/imovel'
 
-export interface Imovel {
-  id: string
-  link: string
-  endereco: string
-  quartos: number
-  banheiros: number
-  vagas: number
-  corretor_id?: string
-  // Novos campos opcionais para calculadora
-  titulo?: string
-  bairro?: string
-  cidade?: string
-  valor_anuncio?: number
-  m2?: number
-  valor_condominio?: number
-  valor_iptu?: number
-  status_processo?: string
-  created_at?: string
-  updated_at?: string
-}
+// Usando o tipo correto da página de imóveis
+export type Imovel = ImovelCompleto
 
 // Helper para criar dados de exibição com fallbacks
 export interface ImovelParaCalculadora {
@@ -46,6 +29,9 @@ interface ImoveisState {
   isLoading: boolean
   carregarImoveis: () => Promise<void>
   obterImovelPorId: (id: string) => Imovel | undefined
+  adicionarImovel: (imovel: Omit<Imovel, 'id' | 'created_at' | 'updated_at' | 'corretor_nome'>) => Promise<void>
+  editarImovel: (id: string, imovel: Partial<Omit<Imovel, 'id' | 'created_at' | 'updated_at' | 'corretor_nome'>>) => Promise<void>
+  removerImovel: (id: string) => Promise<void>
   mapearPropertyDataParaViabilityInputs: (property: PropertyData) => Partial<ViabilityInputs>
   mapearImovelParaViabilityInputs: (imovel: ImovelParaCalculadora) => Partial<ViabilityInputs>
 }
@@ -176,6 +162,76 @@ export const useImoveisStore = create<ImoveisState>((set, get) => ({
       valorCondominio: parseCurrency(property.condominiumFee),
       valorIPTU: parseCurrency(property.iptu),
       valorContasGerais: null // Será calculado depois ou inserido manualmente
+    }
+  },
+
+  adicionarImovel: async (imovelData) => {
+    set({ isLoading: true })
+    try {
+      const { error } = await supabase
+        .from('imoveis')
+        .insert([imovelData])
+        .select()
+        .single()
+
+      if (error) throw error
+
+      // Recarregar a lista completa
+      const state = get()
+      await state.carregarImoveis()
+    } catch (error) {
+      console.error('Erro ao adicionar imóvel:', error)
+      throw error
+    } finally {
+      set({ isLoading: false })
+    }
+  },
+
+  editarImovel: async (id, imovelData) => {
+    set({ isLoading: true })
+    try {
+      const { error } = await supabase
+        .from('imoveis')
+        .update({ ...imovelData, updated_at: new Date().toISOString() })
+        .eq('id', id)
+
+      if (error) throw error
+
+      // Recarregar a lista completa
+      const state = get()
+      await state.carregarImoveis()
+    } catch (error) {
+      console.error('Erro ao editar imóvel:', error)
+      throw error
+    } finally {
+      set({ isLoading: false })
+    }
+  },
+
+  removerImovel: async (id) => {
+    set({ isLoading: true })
+    try {
+      const { error } = await supabase
+        .from('imoveis')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      // Atualizar estado local removendo o imóvel
+      const { imoveis, imoveisParaCalculadora } = get()
+      const novosImoveis = imoveis.filter(imovel => imovel.id !== id)
+      const novosImoveisParaCalculadora = imoveisParaCalculadora.filter(imovel => imovel.id !== id)
+      
+      set({ 
+        imoveis: novosImoveis, 
+        imoveisParaCalculadora: novosImoveisParaCalculadora 
+      })
+    } catch (error) {
+      console.error('Erro ao remover imóvel:', error)
+      throw error
+    } finally {
+      set({ isLoading: false })
     }
   },
 

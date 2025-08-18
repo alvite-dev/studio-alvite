@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { X, Settings, Calculator, Calendar, Users, Home } from 'lucide-react'
+import { X, Settings, Calculator, Calendar, Users, Home, Building2 } from 'lucide-react'
 import Image from 'next/image'
 import { useSwipeToDismiss } from '@/hooks/useSwipeToDismiss'
 
@@ -43,6 +43,11 @@ export default function MoreMenuSheet({ isOpen, onClose }: MoreMenuSheetProps) {
       name: 'Corretores',
       href: '/corretores',
       icon: Users
+    },
+    {
+      name: 'Imóveis',
+      href: '/imoveis',
+      icon: Building2
     },
     {
       name: 'Viabilidade',
