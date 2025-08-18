@@ -74,9 +74,29 @@ export function ImoveisFilters({
     onFiltrosChange({ ...filtros, vagas_min: value && value !== 'sem-min-vagas' ? Number(value) : null })
   }
 
+  const handleValorMinChange = (value: string) => {
+    const numValue = value.replace(/\D/g, '')
+    onFiltrosChange({ ...filtros, valor_min: numValue ? Number(numValue) : null })
+  }
+
+  const handleValorMaxChange = (value: string) => {
+    const numValue = value.replace(/\D/g, '')
+    onFiltrosChange({ ...filtros, valor_max: numValue ? Number(numValue) : null })
+  }
+
+  const formatCurrency = (value: number | null) => {
+    if (!value) return ''
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 0
+    }).format(value)
+  }
+
   return (
     <>
-      <div className="flex gap-3 px-6 sm:px-8 py-4 bg-white">
+      {/* Mobile: Barra de pesquisa + Botão de filtros */}
+      <div className="md:hidden flex gap-3 px-6 sm:px-8 py-4 bg-white">
         {/* Barra de pesquisa */}
         <div className="flex-1 min-w-0">
           <div className="relative">
@@ -96,7 +116,7 @@ export function ImoveisFilters({
           variant="outline"
           size="sm"
           onClick={() => setFiltrosModalOpen(true)}
-          className="shrink-0 md:hidden relative"
+          className="shrink-0 relative"
         >
           <Filter className="w-4 h-4" />
           {filtrosAtivos > 0 && (
@@ -105,12 +125,29 @@ export function ImoveisFilters({
             </span>
           )}
         </Button>
+      </div>
 
-        {/* Filtros inline no desktop */}
-        <div className="hidden md:flex gap-3">
+      {/* Desktop: Layout original com filtros organizados */}
+      <div className="hidden md:flex md:flex-col gap-4 px-6 sm:px-8 py-4 bg-white">
+        {/* Primeira linha - Busca */}
+        <div className="flex-1 min-w-0">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Buscar por título, endereço, bairro..."
+              value={filtros.busca}
+              onChange={(e) => handleBuscaChange(e.target.value)}
+              className="pl-10"
+            />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+          </div>
+        </div>
+
+        {/* Segunda linha - Filtros específicos */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3">
           {/* Bairro */}
           <Select value={filtros.bairro || 'todos-bairros'} onValueChange={handleBairroChange}>
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger>
               <SelectValue placeholder="Bairro" />
             </SelectTrigger>
             <SelectContent>
@@ -125,7 +162,7 @@ export function ImoveisFilters({
 
           {/* Corretor */}
           <Select value={filtros.corretor_id || 'todos-corretores'} onValueChange={handleCorretorChange}>
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger>
               <SelectValue placeholder="Corretor" />
             </SelectTrigger>
             <SelectContent>
@@ -140,7 +177,7 @@ export function ImoveisFilters({
 
           {/* Quartos Mín */}
           <Select value={filtros.quartos_min?.toString() || 'sem-min'} onValueChange={handleQuartosMinChange}>
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger>
               <SelectValue placeholder="Quartos mín" />
             </SelectTrigger>
             <SelectContent>
@@ -154,7 +191,7 @@ export function ImoveisFilters({
 
           {/* Banheiros Mín */}
           <Select value={filtros.banheiros_min?.toString() || 'sem-min-banh'} onValueChange={handleBanheirosMinChange}>
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger>
               <SelectValue placeholder="Banheiros mín" />
             </SelectTrigger>
             <SelectContent>
@@ -168,7 +205,7 @@ export function ImoveisFilters({
 
           {/* Vagas Mín */}
           <Select value={filtros.vagas_min?.toString() || 'sem-min-vagas'} onValueChange={handleVagasMinChange}>
-            <SelectTrigger className="w-[120px]">
+            <SelectTrigger>
               <SelectValue placeholder="Vagas mín" />
             </SelectTrigger>
             <SelectContent>
@@ -179,6 +216,22 @@ export function ImoveisFilters({
               <SelectItem value="4">4+ vagas</SelectItem>
             </SelectContent>
           </Select>
+
+          {/* Valor Mín */}
+          <Input
+            type="text"
+            placeholder="Valor mín"
+            value={filtros.valor_min ? formatCurrency(filtros.valor_min) : ''}
+            onChange={(e) => handleValorMinChange(e.target.value)}
+          />
+
+          {/* Valor Máx */}
+          <Input
+            type="text"
+            placeholder="Valor máx"
+            value={filtros.valor_max ? formatCurrency(filtros.valor_max) : ''}
+            onChange={(e) => handleValorMaxChange(e.target.value)}
+          />
         </div>
       </div>
 
