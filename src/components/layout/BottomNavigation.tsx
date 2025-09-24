@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { Home, Users, MoreHorizontal } from 'lucide-react'
+import { Home, Users, Wrench, MoreHorizontal } from 'lucide-react'
 import MoreMenuSheet from '@/components/features/MoreMenuSheet'
 
 export default function BottomNavigation() {
@@ -22,6 +22,12 @@ export default function BottomNavigation() {
       href: '/corretores', 
       icon: Users,
       activeIcon: Users
+    },
+    { 
+      name: 'Terceiros', 
+      href: '/terceiros', 
+      icon: Wrench,
+      activeIcon: Wrench
     },
     { 
       name: 'More', 
