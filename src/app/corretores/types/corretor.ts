@@ -10,5 +10,6 @@ export interface CorretorCompleto {
 
 export interface CorretorFiltros {
   busca: string
-  regiao: string
+  imobiliaria: string
+  bairro: string
 }

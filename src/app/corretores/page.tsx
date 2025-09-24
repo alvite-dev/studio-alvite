@@ -23,7 +23,8 @@ export default function CorretoresPage() {
   
   const [filtros, setFiltros] = useState<CorretorFiltros>({
     busca: '',
-    regiao: ''
+    imobiliaria: '',
+    bairro: ''
   })
   const [formOpen, setFormOpen] = useState(false)
   const [corretorEditando, setCorretorEditando] = useState<CorretorCompleto | null>(null)
@@ -38,13 +39,22 @@ export default function CorretoresPage() {
   // Filtrar corretores
   const corretoresFiltrados = useMemo(() => {
     return corretores.filter(corretor => {
+      // Busca textual
       const matchBusca = !filtros.busca || 
         corretor.nome.toLowerCase().includes(filtros.busca.toLowerCase()) ||
         corretor.telefone.toLowerCase().includes(filtros.busca.toLowerCase()) ||
         corretor.imobiliaria?.toLowerCase().includes(filtros.busca.toLowerCase()) ||
         corretor.bairros?.some(bairro => bairro.toLowerCase().includes(filtros.busca.toLowerCase()))
 
-      return matchBusca
+      // Filtro de imobiliária
+      const matchImobiliaria = !filtros.imobiliaria || 
+        corretor.imobiliaria?.toLowerCase().includes(filtros.imobiliaria.toLowerCase())
+
+      // Filtro de bairro
+      const matchBairro = !filtros.bairro || 
+        corretor.bairros?.some(bairro => bairro.toLowerCase().includes(filtros.bairro.toLowerCase()))
+
+      return matchBusca && matchImobiliaria && matchBairro
     })
   }, [corretores, filtros])
 
