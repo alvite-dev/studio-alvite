@@ -11,13 +11,12 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Verificar se há token de autenticação no localStorage
-  // Como middleware roda no servidor, vamos redirecionar para login
-  // e deixar o cliente verificar a autenticação
+  // Para outras rotas, permitir que o AuthWrapper faça a verificação no cliente
+  // O middleware não pode acessar localStorage, então delegamos para o cliente
   const response = NextResponse.next();
   
-  // Adicionar header para verificação no cliente
-  response.headers.set('x-pathname', pathname);
+  // Adicionar header para identificar que passou pelo middleware
+  response.headers.set('x-middleware-verified', 'true');
   
   return response;
 }

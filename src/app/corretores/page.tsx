@@ -112,11 +112,11 @@ export default function CorretoresPage() {
   }
 
   return (
-    <div className="h-[calc(100dvh-72px)] md:h-screen flex flex-col bg-white overflow-hidden">
+    <div className="h-[calc(100dvh-72px)] md:h-[calc(100vh-56px)] flex flex-col bg-white overflow-hidden">
       
       <PageHeader
         title="Corretores"
-        description={`${corretoresFiltrados.length} ${corretoresFiltrados.length === 1 ? 'corretor' : 'corretores'} encontrado${corretoresFiltrados.length === 1 ? '' : 's'}`}
+        description="Gerencie os corretores cadastrados"
         action={
           <Button onClick={handleAddCorretor} size="sm" className="shrink-0">
             <Plus className="w-4 h-4 sm:mr-2" />

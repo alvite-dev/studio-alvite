@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/layout/Sidebar";
-import BottomNavigation from "@/components/layout/BottomNavigation";
+import AuthWrapper from "@/components/layout/AuthWrapper";
+import ConditionalLayout from "@/components/layout/ConditionalLayout";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,18 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased bg-white`}>
-        <div className="flex h-screen">
-          {/* Desktop Sidebar */}
-          <Sidebar />
-          
-          {/* Main Content */}
-          <main className="flex-1 overflow-auto md:overflow-auto pb-16 md:pb-0">
+        <AuthWrapper>
+          <ConditionalLayout>
             {children}
-          </main>
-        </div>
-        
-        {/* Mobile Bottom Navigation */}
-        <BottomNavigation />
+          </ConditionalLayout>
+        </AuthWrapper>
       </body>
     </html>
   );

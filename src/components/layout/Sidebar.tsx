@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Home, Users, Building, Calculator, Wrench, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 
@@ -45,28 +44,10 @@ export default function Sidebar() {
       className={`hidden md:flex ${shouldShowExpanded ? 'w-64' : 'w-20'} bg-white border-r border-slate-200/60 transition-all duration-200 ease-out flex-col`}
       onMouseLeave={() => setIsHovered(false)}
     >
-        
-        {/* Logo */}
-        <div 
-          className={`flex items-center py-8 ${shouldShowExpanded ? 'px-6' : 'justify-center px-4'}`}
-          onMouseEnter={() => isCollapsed && setIsHovered(true)}
-        >
-          <div className={`w-10 h-10 text-slate-900 relative ${shouldShowExpanded ? 'mr-4' : ''}`}>
-            <Image 
-              src="/new-logo.svg" 
-              alt="Alvite Logo" 
-              fill
-              className="object-contain"
-            />
-          </div>
-          {shouldShowExpanded && (
-            <span className="text-xl font-semibold text-slate-900 tracking-tight">Alvite</span>
-          )}
-        </div>
 
         {/* Navigation */}
         <nav 
-          className={`flex-1 py-6 ${shouldShowExpanded ? 'px-4' : 'px-2'}`}
+          className="flex-1 pt-8 pb-6 pl-4 pr-4"
           onMouseEnter={() => isCollapsed && setIsHovered(true)}
         >
           <div className="space-y-1">
@@ -76,15 +57,15 @@ export default function Sidebar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center ${shouldShowExpanded ? 'px-3 py-2 rounded-md' : 'justify-center w-10 h-10 rounded-lg mx-auto'} text-sm font-medium transition-all duration-150 ${
+                  className={`group flex items-center h-10 rounded-lg text-sm font-medium transition-all duration-150 ${
                     isActive
                       ? 'bg-nav-active text-white'
                       : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-                  title={!shouldShowExpanded ? item.name : undefined}
+                  } ${shouldShowExpanded ? 'pr-3' : 'w-10'}`}
+                  title={isCollapsed && !isHovered ? item.name : undefined}
                 >
-                  <span className={shouldShowExpanded ? 'mr-3' : ''}>{renderIcon(item.icon)}</span>
-                  {shouldShowExpanded && item.name}
+                  <span className="w-10 h-10 flex items-center justify-center flex-shrink-0">{renderIcon(item.icon)}</span>
+                  {shouldShowExpanded && <span className="ml-1">{item.name}</span>}
                 </Link>
               )
             })}
@@ -92,10 +73,10 @@ export default function Sidebar() {
         </nav>
 
         {/* Collapse button - bottom of sidebar */}
-        <div className={`border-t border-slate-100 ${shouldShowExpanded ? 'p-4' : 'p-2'}`}>
+        <div className="border-t border-slate-100 py-4 pl-4">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className={`hidden md:flex ${shouldShowExpanded ? 'justify-start' : 'justify-center'} w-full px-2 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-all duration-150`}
+            className="hidden md:flex justify-center items-center w-10 h-10 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-md transition-all duration-150"
             title={isCollapsed ? 'Expandir menu' : 'Recolher menu'}
           >
             {isCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}

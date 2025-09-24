@@ -143,11 +143,11 @@ export default function ImoveisPage() {
   }
 
   return (
-    <div className="h-[calc(100dvh-72px)] md:h-screen flex flex-col bg-white overflow-hidden">
+    <div className="h-[calc(100dvh-72px)] md:h-[calc(100vh-56px)] flex flex-col bg-white overflow-hidden">
       
       <PageHeader
         title="Imóveis"
-        description={`${imoveisFiltrados.length} ${imoveisFiltrados.length === 1 ? 'imóvel' : 'imóveis'} encontrado${imoveisFiltrados.length === 1 ? '' : 's'}`}
+        description="Gerencie os imóveis cadastrados"
         action={
           <Button onClick={handleAddImovel} size="sm" className="shrink-0">
             <Plus className="w-4 h-4 sm:mr-2" />
