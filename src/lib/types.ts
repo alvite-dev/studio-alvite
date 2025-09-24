@@ -72,32 +72,6 @@ export interface Viabilidade {
   created_at: Date;
 }
 
-export interface Visita {
-  id: string;
-  imovel_id: string;
-  data_hora: Date;
-  status: StatusVisita;
-  observacoes_pre?: string;
-  created_at: Date;
-}
-
-export type StatusVisita = 'agendada' | 'realizada' | 'cancelada';
-
-export interface AvaliacaoVisita {
-  id: string;
-  visita_id: string;
-  imovel_id: string;
-  estado_geral: number; // 1-10
-  acabamentos: number; // 1-10
-  localizacao: number; // 1-10
-  potencial_reforma: number; // 1-10
-  problemas_estruturais?: string;
-  pontos_positivos?: string;
-  pontos_negativos?: string;
-  fotos_visita?: string[];
-  recomenda_compra: boolean;
-  created_at: Date;
-}
 
 export interface Noticia {
   id: string;

@@ -54,25 +54,6 @@ export const viabilidadeSchema = z.object({
   observacoes: z.string().optional(),
 });
 
-export const visitaSchema = z.object({
-  imovel_id: z.string(),
-  data_hora: z.date(),
-  observacoes_pre: z.string().optional(),
-});
-
-export const avaliacaoVisitaSchema = z.object({
-  visita_id: z.string(),
-  imovel_id: z.string(),
-  estado_geral: z.number().int().min(1).max(10),
-  acabamentos: z.number().int().min(1).max(10),
-  localizacao: z.number().int().min(1).max(10),
-  potencial_reforma: z.number().int().min(1).max(10),
-  problemas_estruturais: z.string().optional(),
-  pontos_positivos: z.string().optional(),
-  pontos_negativos: z.string().optional(),
-  fotos_visita: z.array(z.string()).optional(),
-  recomenda_compra: z.boolean(),
-});
 
 export const scrapingUrlSchema = z.object({
   url: z.string().url("URL inválida"),
@@ -81,6 +62,4 @@ export const scrapingUrlSchema = z.object({
 // Form validation types
 export type ImovelFormData = z.infer<typeof imovelSchema>;
 export type ViabilidadeFormData = z.infer<typeof viabilidadeSchema>;
-export type VisitaFormData = z.infer<typeof visitaSchema>;
-export type AvaliacaoVisitaFormData = z.infer<typeof avaliacaoVisitaSchema>;
 export type ScrapingUrlData = z.infer<typeof scrapingUrlSchema>;

@@ -3,7 +3,6 @@ export const FEATURES = {
   IMOVEIS: true,
   LIA: true, 
   VIABILIDADES: true,
-  VISITAS: true,
   SCRAPING: true,
   NOTICIAS: false,        // Ativar depois
   

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Home, Calendar, Users, Building, Calculator, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { Home, Users, Building, Calculator, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -15,7 +15,6 @@ export default function Sidebar() {
 
   const navigation = [
     { name: 'Home', href: '/', icon: 'home' },
-    { name: 'Agenda de Visitas', href: '/agenda', icon: 'calendar' },
     { name: 'Corretores', href: '/corretores', icon: 'users' },
     { name: 'Imóveis', href: '/imoveis', icon: 'building' },
     { name: 'Viabilidade', href: '/viabilidade', icon: 'calculator' },
@@ -27,8 +26,6 @@ export default function Sidebar() {
     switch (iconName) {
       case 'home':
         return <Home {...iconProps} />
-      case 'calendar':
-        return <Calendar {...iconProps} />
       case 'users':
         return <Users {...iconProps} />
       case 'building':

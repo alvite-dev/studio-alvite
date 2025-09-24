@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { Home, Calendar, Users, MoreHorizontal } from 'lucide-react'
+import { Home, Users, MoreHorizontal } from 'lucide-react'
 import MoreMenuSheet from '@/components/features/MoreMenuSheet'
 
 export default function BottomNavigation() {
@@ -16,12 +16,6 @@ export default function BottomNavigation() {
       href: '/', 
       icon: Home,
       activeIcon: Home
-    },
-    { 
-      name: 'Agenda', 
-      href: '/agenda', 
-      icon: Calendar,
-      activeIcon: Calendar
     },
     { 
       name: 'Corretores', 
