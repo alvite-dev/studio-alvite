@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { 
   ExternalLink, 
   Edit, 
+  Trash2,
   MapPin, 
   Ruler, 
   Bed, 
@@ -22,13 +23,15 @@ interface ImovelInfoModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onEdit: (imovel: ImovelCompleto) => void
+  onDelete?: (id: string) => void
 }
 
 export function ImovelInfoModal({ 
   imovel, 
   open, 
   onOpenChange, 
-  onEdit
+  onEdit,
+  onDelete
 }: ImovelInfoModalProps) {
   if (!imovel) return null
 
@@ -114,14 +117,33 @@ export function ImovelInfoModal({
                 </Button>
               )}
               
-              <Button
-                size="sm"
-                onClick={() => onEdit(imovel)}
-                className="gap-2"
-              >
-                <Edit className="w-4 h-4" />
-                Editar
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => onEdit(imovel)}
+                  className="gap-2"
+                >
+                  <Edit className="w-4 h-4" />
+                  Editar
+                </Button>
+                
+                {onDelete && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      if (confirm('Tem certeza que deseja excluir este imóvel?')) {
+                        onDelete(imovel.id)
+                        onOpenChange(false)
+                      }
+                    }}
+                    className="gap-2 text-red-600 border-red-300 hover:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Excluir
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
 

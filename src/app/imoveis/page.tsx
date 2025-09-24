@@ -170,8 +170,6 @@ export default function ImoveisPage() {
         ) : (
           <ImoveisTable
             imoveis={imoveisFiltrados}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
             onInfo={handleInfo}
           />
         )}
@@ -189,6 +187,7 @@ export default function ImoveisPage() {
         open={infoModalOpen}
         onOpenChange={setInfoModalOpen}
         onEdit={handleEdit}
+        onDelete={handleDelete}
       />
     </div>
   )

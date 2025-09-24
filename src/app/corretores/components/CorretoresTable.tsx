@@ -10,14 +10,12 @@ import {
   TableRow 
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { MessageCircle, Trash2, ArrowUpDown, Phone, Info } from 'lucide-react'
+import { MessageCircle, ArrowUpDown, Phone, Info } from 'lucide-react'
 import { CorretorCompleto } from '../types/corretor'
 import { BairroTags } from './BairroTags'
 
 interface CorretoresTableProps {
   corretores: CorretorCompleto[]
-  onEdit: (corretor: CorretorCompleto) => void
-  onDelete: (id: string) => void
   onWhatsApp: (telefone: string) => void
   onInfo: (corretor: CorretorCompleto) => void
 }
@@ -27,8 +25,6 @@ type SortDirection = 'asc' | 'desc'
 
 export function CorretoresTable({ 
   corretores, 
-  onEdit, 
-  onDelete, 
   onWhatsApp,
   onInfo
 }: CorretoresTableProps) {
@@ -159,16 +155,6 @@ export function CorretoresTable({
                       title="Abrir WhatsApp"
                     >
                       <MessageCircle className="h-5 w-5" />
-                    </Button>
-                    
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(corretor.id)}
-                      className="h-10 w-10 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 shrink-0"
-                      title="Excluir corretor"
-                    >
-                      <Trash2 className="h-5 w-5" />
                     </Button>
                   </div>
                 </TableCell>

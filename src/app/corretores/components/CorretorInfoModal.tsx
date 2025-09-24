@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Phone, MessageCircle, Edit, Building2, MapPin, User } from 'lucide-react'
+import { Phone, MessageCircle, Edit, Trash2, Building2, MapPin, User } from 'lucide-react'
 import { CorretorCompleto } from '../types/corretor'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { BairroTags } from './BairroTags'
@@ -13,6 +13,7 @@ interface CorretorInfoModalProps {
   onOpenChange: (open: boolean) => void
   onEdit: (corretor: CorretorCompleto) => void
   onWhatsApp: (telefone: string) => void
+  onDelete?: (id: string) => void
 }
 
 export function CorretorInfoModal({ 
@@ -20,7 +21,8 @@ export function CorretorInfoModal({
   open, 
   onOpenChange, 
   onEdit, 
-  onWhatsApp 
+  onWhatsApp,
+  onDelete
 }: CorretorInfoModalProps) {
   const isMobile = useIsMobile()
 
@@ -92,17 +94,35 @@ export function CorretorInfoModal({
               WhatsApp
             </Button>
             
-            <Button
-              onClick={() => {
-                onEdit(corretor)
-                onOpenChange(false)
-              }}
-              variant="outline"
-              className="flex-1"
-            >
-              <Edit className="w-4 h-4 mr-2" />
-              Editar
-            </Button>
+            <div className="flex gap-3 flex-1">
+              <Button
+                onClick={() => {
+                  onEdit(corretor)
+                  onOpenChange(false)
+                }}
+                variant="outline"
+                className="flex-1"
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Editar
+              </Button>
+              
+              {onDelete && (
+                <Button
+                  onClick={() => {
+                    if (confirm(`Tem certeza que deseja excluir ${corretor.nome}?`)) {
+                      onDelete(corretor.id)
+                      onOpenChange(false)
+                    }
+                  }}
+                  variant="outline"
+                  className="flex-1 text-red-600 border-red-300 hover:bg-red-50"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Excluir
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </DialogContent>

@@ -13,8 +13,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
   ExternalLink, 
-  Edit, 
-  Trash2, 
   ArrowUpDown, 
   Home, 
   Info
@@ -23,8 +21,6 @@ import { ImovelCompleto } from '../types/imovel'
 
 interface ImoveisTableProps {
   imoveis: ImovelCompleto[]
-  onEdit: (imovel: ImovelCompleto) => void
-  onDelete: (id: string) => void
   onInfo: (imovel: ImovelCompleto) => void
 }
 
@@ -33,8 +29,6 @@ type SortDirection = 'asc' | 'desc'
 
 export function ImoveisTable({ 
   imoveis, 
-  onEdit, 
-  onDelete, 
   onInfo
 }: ImoveisTableProps) {
   const [sortField, setSortField] = useState<SortField>('titulo')
@@ -220,16 +214,16 @@ export function ImoveisTable({
                   </Badge>
                 </TableCell>
                 
-                <TableCell className="text-left w-[180px] sm:w-auto">
-                  <div className="flex items-center justify-start space-x-1">
+                <TableCell className="text-left w-[160px] sm:w-auto">
+                  <div className="flex items-center justify-start space-x-1 sm:space-x-2">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onInfo(imovel)}
-                      className="h-9 w-9 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50 shrink-0"
+                      className="h-10 w-10 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50 shrink-0"
                       title="Ver informações"
                     >
-                      <Info className="h-4 w-4" />
+                      <Info className="h-5 w-5" />
                     </Button>
                     
                     {imovel.link && (
@@ -237,32 +231,13 @@ export function ImoveisTable({
                         variant="ghost"
                         size="sm"
                         onClick={() => window.open(imovel.link, '_blank')}
-                        className="h-9 w-9 p-0 text-purple-600 hover:text-purple-700 hover:bg-purple-50 shrink-0"
+                        className="h-10 w-10 p-0 text-purple-600 hover:text-purple-700 hover:bg-purple-50 shrink-0"
                         title="Abrir link externo"
                       >
-                        <ExternalLink className="h-4 w-4" />
+                        <ExternalLink className="h-5 w-5" />
                       </Button>
                     )}
                     
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(imovel)}
-                      className="h-9 w-9 p-0 text-orange-600 hover:text-orange-700 hover:bg-orange-50 shrink-0"
-                      title="Editar imóvel"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(imovel.id)}
-                      className="h-9 w-9 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 shrink-0"
-                      title="Excluir imóvel"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
                   </div>
                 </TableCell>
               </TableRow>

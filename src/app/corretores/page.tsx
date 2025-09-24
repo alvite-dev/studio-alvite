@@ -139,8 +139,6 @@ export default function CorretoresPage() {
         ) : (
           <CorretoresTable
             corretores={corretoresFiltrados}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
             onWhatsApp={handleWhatsApp}
             onInfo={handleInfo}
           />
@@ -160,6 +158,7 @@ export default function CorretoresPage() {
         onOpenChange={setInfoModalOpen}
         onEdit={handleEdit}
         onWhatsApp={handleWhatsApp}
+        onDelete={handleDelete}
       />
     </div>
   )

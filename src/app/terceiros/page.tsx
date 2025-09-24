@@ -133,8 +133,6 @@ export default function TerceirosPage() {
         ) : (
           <TerceirosTable
             terceiros={terceirosFiltrados}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
             onInfo={handleInfo}
             onWhatsApp={handleWhatsApp}
           />
