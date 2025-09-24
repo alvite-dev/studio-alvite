@@ -23,6 +23,7 @@ export function ImoveisFilters({
   const { corretores, carregarCorretores } = useCorretoresStore()
   const { imoveis } = useImoveisStore()
   const [filtrosModalOpen, setFiltrosModalOpen] = useState(false)
+  const [filtrosDesktopVisivel, setFiltrosDesktopVisivel] = useState(false)
   
   useEffect(() => {
     carregarCorretores()
@@ -127,24 +128,42 @@ export function ImoveisFilters({
         </Button>
       </div>
 
-      {/* Desktop: Layout original com filtros organizados */}
+      {/* Desktop: Layout com toggle de filtros */}
       <div className="hidden md:flex md:flex-col gap-4 px-6 sm:px-8 py-4 bg-white">
-        {/* Primeira linha - Busca */}
-        <div className="flex-1 min-w-0">
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Buscar por título, endereço, bairro..."
-              value={filtros.busca}
-              onChange={(e) => handleBuscaChange(e.target.value)}
-              className="pl-10"
-            />
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+        {/* Primeira linha - Busca + Botão de filtros */}
+        <div className="flex gap-3 items-center">
+          <div className="flex-1 min-w-0">
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Buscar por título, endereço, bairro..."
+                value={filtros.busca}
+                onChange={(e) => handleBuscaChange(e.target.value)}
+                className="pl-10"
+              />
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+            </div>
           </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setFiltrosDesktopVisivel(!filtrosDesktopVisivel)}
+            className="shrink-0 relative"
+          >
+            <Filter className="w-4 h-4 mr-2" />
+            Filtros
+            {filtrosAtivos > 0 && (
+              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {filtrosAtivos}
+              </span>
+            )}
+          </Button>
         </div>
 
-        {/* Segunda linha - Filtros específicos */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+        {/* Segunda linha - Filtros específicos (colapsível) */}
+        {filtrosDesktopVisivel && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3 animate-in slide-in-from-top-2 duration-200">
           {/* Bairro */}
           <Select value={filtros.bairro || 'todos-bairros'} onValueChange={handleBairroChange}>
             <SelectTrigger>
@@ -232,7 +251,8 @@ export function ImoveisFilters({
             value={filtros.valor_max ? formatCurrency(filtros.valor_max) : ''}
             onChange={(e) => handleValorMaxChange(e.target.value)}
           />
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Modal de filtros para mobile */}
